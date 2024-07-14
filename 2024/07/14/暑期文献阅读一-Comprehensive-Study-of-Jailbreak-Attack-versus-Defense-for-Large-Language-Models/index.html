@@ -3,8 +3,8 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>暑期文献阅读一 Comprehensive Study of Jailbreak Attack versus Defense for Large Language Models | Hexo</title>
-    <meta name="author" content="John Doe" />
+    <title>暑期文献阅读一 Comprehensive Study of Jailbreak Attack Versus Defense for Large Language Models | JXCUSO4的博客</title>
+    <meta name="author" content="JXCUSO4" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
     <meta
@@ -39,6 +39,9 @@
 <script src="/js/lib/preview.js"></script>
 
 
+<script src="https://s4.zstatic.net/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+<script src="/js/lib/crypto.js"></script>
+
 
 
 
@@ -63,7 +66,7 @@
         <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
     <nav id="desktop-menu">
         <a class="title" href="/">
-            <span>HEXO</span>
+            <span>JXCUSO4的博客</span>
         </a>
         
         <a href="/">
@@ -95,7 +98,7 @@
     <nav id="mobile-menu">
         <div class="title" @click="showMenuItems = !showMenuItems">
             <i class="fa-solid fa-bars fa-fw"></i>
-            <span>&emsp;HEXO</span>
+            <span>&emsp;JXCUSO4的博客</span>
         </div>
         <transition name="slide">
             <div class="items" v-show="showMenuItems">
@@ -156,7 +159,7 @@
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
             <div class="article">
     <div>
-        <h1>暑期文献阅读一 Comprehensive Study of Jailbreak Attack versus Defense for Large Language Models</h1>
+        <h1>暑期文献阅读一 Comprehensive Study of Jailbreak Attack Versus Defense for Large Language Models</h1>
     </div>
     <div class="info">
         <span class="date">
@@ -169,164 +172,20 @@
         
     </div>
     
-    <div class="content" v-pre>
-        <hr>
-<h1 id="A-Comprehensive-Study-of-Jailbreak-Attack-versus-Defense-for-Large-Language-Models"><a href="#A-Comprehensive-Study-of-Jailbreak-Attack-versus-Defense-for-Large-Language-Models" class="headerlink" title="A Comprehensive Study of Jailbreak Attack versus Defense for Large Language Models"></a>A Comprehensive Study of Jailbreak Attack versus Defense for Large Language Models</h1><p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=OTljZWU5YjgyMGY0NDY3N2M0YjIwMjQ1N2ZlZmUzNTJfSTR6UU9KNzBsSkhnU2NxN0FkOTRZanh1S1pUTUd6MGFfVG9rZW46VmN5VmIzdGxDb21vR2l4T3JIR2NwcW96blBlXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-<p>九种攻击技术和七种防御机制。</p>
-<p>这些方法应用于三个不同的语言模型：Vicuna、LLaMA和GPT-3.5 Turbo。</p>
-<p>使用RoBERTa模型进行微调，分类恶意响应</p>
-<p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=NTE4MTVmYzcxYWI3NDA2MjNhNDA2OTlkNjRiZDAwNWNfTUJkZ0pHOG1peTBMc3d2NkIzeHNzbUFKVjlKN1pUSXdfVG9rZW46WGtvbGJKSDdLb0JyZ0l4RkEwVmNNZmpPbkZoXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-<h2 id="Jailbreak-Attack-Techniques"><a href="#Jailbreak-Attack-Techniques" class="headerlink" title="Jailbreak Attack Techniques"></a>Jailbreak Attack Techniques</h2><h3 id="Generative-Techniques"><a href="#Generative-Techniques" class="headerlink" title="Generative Techniques"></a>Generative Techniques</h3><p>指的是动态生成内容的技术，通常不依赖预先设计好的模板或计划。这些技术通过不断优化和生成新内容，试图绕过语言模型的安全防护</p>
-<p><strong>eg</strong>:</p>
-<p>AutoDAN(Liuetal., 2023a), </p>
-<p>自动化生成越狱提示，同时保持其语义连贯性和隐蔽性</p>
-<p>PAIR (Chaoetal., 2023), </p>
-<p>PAIR（Prompt Attack Iterative Refinement）是一种对抗性生成技术，旨在通过迭代优化生成越狱提示，从而有效地绕过大型语言模型（LLM</p>
-<p>TAP (Mehrotra et al., 2023), </p>
-<p>TAP（Tree of Attacks with Pruning）是一种自动化的黑箱越狱方法，旨在通过树状思维和剪枝策略生成并优化越狱提示</p>
-<p>GPTFuzz (Yu et al., 2023), </p>
-<p>GPTFUZZER是一种黑盒越狱模糊测试框架，旨在自动生成越狱模板，用于红队测试大规模语言模型（LLMs）。与手工制作的越狱模板不同，GPTFUZZER自动生成越狱模板以扩大测试规模。其核心组件包括种子选择策略、变异操作符和判断模型。</p>
-<p>GCG (Optimize per prompt on a single model) (Zou et al., 2023)</p>
-<p>GCG通过在用户查询中添加对抗性后缀来诱导模型生成有害内容，从而突破模型的安全防护措施。此方法结合了贪心搜索和基于梯度的离散优化技术，以自动生成对抗性提示。这些生成的对抗性提示在多个模型和多种提示上的迁移性表现良好。</p>
-<h3 id="Template-Techniques"><a href="#Template-Techniques" class="headerlink" title="Template Techniques"></a>Template Techniques</h3><p>comprises attacks conducted via pre-defined templates or modifications in the generation settings.包括通过预定义的模板进行的攻击或对生成设置的修改</p>
-<p><strong>eg</strong>:</p>
-<p>Jailbroken (Wei et al., 2023), </p>
-<p>77 Templates from existing study (Liu et al., 2023b), </p>
-<p>破解提示</p>
-<p>假装类型（Pretending）：</p>
-<p>角色扮演（Character Role Play, CR）：提示要求ChatGPT扮演一个角色，导致意外的响应。</p>
-<p>承担责任（Assumed Responsibility, AR）：提示要求ChatGPT承担责任，导致可被利用的输出。</p>
-<p>研究实验（Research Experiment, RE）：提示模拟科学实验，输出可以被利用。</p>
-<p>注意力转移（Attention Shifting）：</p>
-<p>文本续写（Text Continuation, TC）：提示要求ChatGPT继续文本，导致可被利用的输出。</p>
-<p>逻辑推理（Logical Reasoning, LOGIC）：提示要求逻辑推理，导致可被利用的输出。</p>
-<p>程序执行（Program Execution, PROG）：提示要求执行程序，导致可被利用的输出。</p>
-<p>翻译（Translation, TRANS）：提示要求文本翻译，导致可被操控的输出。</p>
-<p>特权提升（Privilege Escalation）：</p>
-<p>高级模型（Superior Model, SUPER）：提示利用高级模型的输出来利用ChatGPT的行为。</p>
-<p>超级用户模式（Sudo Mode, SUDO）：提示调用ChatGPT的“超级用户模式”，生成可被利用的输出。</p>
-<p>模拟破解（Simulate Jailbreaking, SIMU）：提示模拟破解过程，导致可被利用的输出。</p>
-<p>Deep Inception (Li et al., 2023a)</p>
-<p> Parameters (Huanget al., 2024)).        </p>
-<h3 id="Training-Gaps-Techniques"><a href="#Training-Gaps-Techniques" class="headerlink" title="Training Gaps Techniques"></a>Training Gaps Techniques</h3><p>利用安全训练实践中的不足进行攻击。</p>
-<p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=ZWFlN2FjNTAzNzk0ZGQ5MzI3NDA0OWVjY2ZlNzVjNjlfY0p1YmpyUU52enFtSndWbTljYUJOTTFXdThwcDBvOXNfVG9rZW46SE1RbmI2UGtyb0VINUN4Q3dwTmNsS21sbmZlXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-<p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=ZWYxY2MzZDliYWVhMThmYTkxODMzMGQ4NzkyYTFiOTVfbWJQMndreXNQdzBuSFNwOXlPU3VMY3E3VnFKeW1kcUVfVG9rZW46UllXcWJjVU50b3ppY0R4SUUyZmNGM2lybkVnXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-<h2 id="2-3-Jailbreak-Defense-Techniques"><a href="#2-3-Jailbreak-Defense-Techniques" class="headerlink" title="2.3 Jailbreak Defense Techniques"></a>2.3 Jailbreak Defense Techniques</h2><h3 id="Self-Processing-Defenses"><a href="#Self-Processing-Defenses" class="headerlink" title="Self-Processing Defenses"></a>Self-Processing Defenses</h3><p> 依赖于语言模型（LLM）自身能力的防御技术。这类方法通过优化和调整模型自身的内部机制来检测和防御恶意攻击</p>
-<h3 id="Additional-Helper-Defenses"><a href="#Additional-Helper-Defenses" class="headerlink" title="Additional Helper Defenses"></a>Additional Helper Defenses</h3><p>需要额外的算法或辅助语言模型（LLMs）来支持主要模型的防御机制</p>
-<p>Bergeron(Pisanoetal.,2023)</p>
-<p>引入使用辅助LLM的框架，利用附加信息来维持主要模型的对齐</p>
-<p>Baseline(Jainetal.,2023)</p>
-<p>通过计算每个令牌的平均负对数似然值来推导困惑度，如果生成的文本的困惑度超过阈值 TTT，则将其标记为潜在的对抗攻击</p>
-<h3 id="Input-Permutation-Defenses"><a href="#Input-Permutation-Defenses" class="headerlink" title="Input Permutation Defenses"></a>Input Permutation Defenses</h3><p>通过修改输入提示或对其进行置换以检测和对抗恶意请求。这些方法通常涉及多次验证和部分删除输入内容</p>
-<p>RALLM(Cao et al., 2023)</p>
-<p>通过交换、添加或修补到预定百分比来修改提示。</p>
-<p>SmoothLLM(Robey et al., 2023) </p>
-<p>实现随机输入丢弃，直到指定百分比</p>
-<h4 id="源项目和API"><a href="#源项目和API" class="headerlink" title="源项目和API"></a>源项目和API</h4><ul>
-<li><strong>Aegis（Automorphic, 2023）</strong>：<ul>
-<li><strong>描述</strong>：一个开源项目，提供强大的防御机制，以保护LLM不受恶意攻击。</li>
-</ul>
-</li>
-<li><strong>LLMguard（ProtectAI, 2023）</strong>：<ul>
-<li><strong>描述</strong>：一个开源项目，专注于通过高级防御技术保护LLM。</li>
-</ul>
-</li>
-<li><strong>OpenAI Moderation API（OpenAI, 2023）</strong>：<ul>
-<li><strong>描述</strong>：提供一种用于内容审核的API，可用于检测和过滤恶意内容。</li>
-</ul>
-</li>
-</ul>
-<p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=YWU0NDE1MjE2ODE4YjNlZmVhNjY2ZjBhNWQ4OTI0NTlfejJ0djFTQVR0MTI5Zlk0a3phdnB4SVVGQ2UzblZ0RHBfVG9rZW46VXNmVmJSWFRnb0FCcVR4SU1GVGNtN25hbkRBXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-<h2 id="Experimental-Configuration"><a href="#Experimental-Configuration" class="headerlink" title="Experimental Configuration"></a>Experimental Configuration</h2><p><strong>查询执行次数</strong>：</p>
-<p>每个查询执行5次，以最小化变异性并确保结果的一致性。</p>
-<p>多次执行有助于减少单次实验中可能出现的偶然性误差，从而提高实验结果的可靠性。</p>
-<p><strong>生成模型的迭代次数</strong>：</p>
-<p>对于涉及生成模型的评估，每个查询最多进行75次迭代，每次迭代定义为一个算法步骤。</p>
-<p>对于特定情况如GCG在Llama模型上，增加迭代次数至500次是为了满足其特定需求，确保实验的公平性</p>
-<h2 id="基准框架（Benchmark-Framework）"><a href="#基准框架（Benchmark-Framework）" class="headerlink" title="基准框架（Benchmark Framework）"></a>基准框架（Benchmark Framework）</h2><p>确保在恶意内容检测的背景下，模型输出严格遵循OpenAI类别的政策合规性。</p>
-<p> 扩展了原始数据集，新增了60个恶意查询。</p>
-<h2 id="结果标注"><a href="#结果标注" class="headerlink" title="结果标注"></a>结果标注</h2><p>在我们的研究中，我们采用了自动和手动标注策略来分类从评估过程中收集的响应</p>
-<p>为了确保对数据集的严格分析，我们选择了随机抽取的1,068条响应样本，目标是以95%的置信水平和3%的误差范围进行分析。这个样本经过手动注释，以评估每个响应与查询的相关性及其提供恶意答案的倾向。</p>
-<h3 id="RQ1-和-RQ2-的评估指标"><a href="#RQ1-和-RQ2-的评估指标" class="headerlink" title="RQ1 和 RQ2 的评估指标"></a>RQ1 和 RQ2 的评估指标</h3><p>为了全面评估攻击的影响和操作的可行性，以及系统的鲁棒性和输出完整性，我们引入了一系列评估指标。这些指标能够帮助我们全面了解攻击和防御机制的效果。</p>
-<h4 id="RQ1-评估指标"><a href="#RQ1-评估指标" class="headerlink" title="RQ1 评估指标"></a>RQ1 评估指标</h4><ol>
-<li>**攻击成功率 (ASR)**：<ol>
-<li><p><strong>定义</strong>：成功攻破的问题数量 ccc 与问题总数 nnn 的比率。</p>
-</li>
-<li><p><strong>公式</strong>：</p>
-</li>
-<li><p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=Y2E4Yzk1YjNkZjcyNjM4YzFhZDhlNjIxZDZiYzViOTJfMG1QUU5MTjRoZkVIZE1teEw1VlRNTUpTeU5Td1czd2pfVG9rZW46SmxNRGJkY2FRb3dQUlh4NkRXNWNDS3NXblRmXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-</li>
-<li><p><strong>目的</strong>：衡量攻击的有效性。</p>
-</li>
-</ol>
-</li>
-<li>**效率 (Efficiency)**：<ol>
-<li><p><strong>定义</strong>：成功攻破模型的个体查询数量 q 与查询总次数 o 的比率。</p>
-</li>
-<li><p><strong>公式</strong>：</p>
-</li>
-<li><p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=MmEyZDdiZmRjOTc2ZDEwN2NlYmE1Zjg5YmZiYmQ0YTZfSFJzNWhZcnBaMXZtNk0zN1piaXNRaDlDakNDMHJDTUFfVG9rZW46U2Q1bmJPMEtQbzFxU1V4RjJtcWN6RFUzbkdoXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-</li>
-<li><p><strong>目的</strong>：量化攻击查询的有效性，每个查询代表一个最小的实验单位或单个提示。</p>
-</li>
-</ol>
-</li>
-</ol>
-<h4 id="RQ2-评估指标"><a href="#RQ2-评估指标" class="headerlink" title="RQ2 评估指标"></a>RQ2 评估指标</h4><p>为了确保对系统鲁棒性和输出完整性的平衡评估，我们引入了以下三个指标。</p>
-<ol>
-<li>**防御通过率 (DPR)**：<ol>
-<li><p><strong>定义</strong>：错误地被分类为无害的提示数量 f与恶意输入总数 m 的比率。</p>
-</li>
-<li><p><strong>公式</strong>：</p>
-</li>
-<li><p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=YWJhZjdhYzExYzU2ZGRkNDk1MmRiZmYzMDhmZjQyYjdfVW13T2dFUXA2SW5nR2s3ZWhONjRTWHBUNGs2Vk9heTBfVG9rZW46WXVZZmJ0dFZHbzc3QjJ4TDl4M2NNeUZqbnVmXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-</li>
-<li><p><strong>目的</strong>：计算错误绕过防御机制的提示比率，衡量防御的脆弱性。</p>
-</li>
-</ol>
-</li>
-<li>**良性成功率 (BSR)**：<ol>
-<li><p><strong>定义</strong>：成功通过防御过滤的非恶意输入数量 s 与输入总数 t的比率。</p>
-</li>
-<li><p><strong>公式</strong>：</p>
-</li>
-<li><p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=NzU2YTI2NTIzMzEzN2JlMzM3MDYzYWFkYTdmYzQ4ZjdfNjBjbzFuUWZsMTllc2pIN0lzUnpvUU5SZmdqSkNNdFJfVG9rZW46T21pMWJKUlBhbzdLcWd4ejBidWNaYXRkbjdnXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-</li>
-<li><p><strong>目的</strong>：评估防御机制在处理非恶意输入时的有效性，确保良性查询不会被误拒。</p>
-</li>
-</ol>
-</li>
-<li>**生成响应质量 (GRQ)**：<ol>
-<li><strong>定义</strong>：评估由防御机制生成的响应相对于标准参考的质量。</li>
-<li><strong>方法</strong>：使用Alpaca Eval框架（Li et al., 2023b），其方法用于自动评估响应质量。</li>
-<li><strong>目的</strong>：评估防御机制在处理良性查询时生成响应的质量，确保其能生成高质量的输出。</li>
-</ol>
-</li>
-</ol>
-<h2 id="RQ1-Effectiveness-of-Jailbreak-Attack"><a href="#RQ1-Effectiveness-of-Jailbreak-Attack" class="headerlink" title="RQ1: Effectiveness of Jailbreak Attack"></a>RQ1: Effectiveness of Jailbreak Attack</h2><p>Jailbroken 和 GPTFuzz 策略在规避 GPT-3.5-turbo 和 Vicuna 的安全措施方面产生了成功的结果。对于 LLaMA，Jailbroken、Parameter，78 templates 策略表现出最高的效率</p>
-<p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=YmVhZGEwYzZiYzEzNDE0MTMzODI1NDBiZDcwMzliNWJfYkxkNHRGbG5meUJzV2huNngwcHNIcERXRG1VSVVlQmdfVG9rZW46TVJzOWI4OGxob0VWMmF4YkxxWWM1YUIybm5kXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-<p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=NTQ0ZGI4MzQ0ZDllNWJkN2RjMTFmOWFlMDgyNWRkZWRfOWdzVTZGdXlUT2YyS1hqc1BqRzF2Z3VBcTJReGtvd0RfVG9rZW46RWdUd2JHMXJsb01YM3N4dW9McGN0SEZHbmxoXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-<p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=MmVlNmEyN2VjYmU2MDM2ODEzY2EzMzBiNjJkMTY0N2JfQm5Sa0hhN3JiQjI4aTN6SEdMN0VLWXlyTnp2ckpKQ1NfVG9rZW46Q0FjQ2J0bVJLb041QXN4cVFlMGNCcGxYbnBlXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-<h2 id="RQ2-Effectiveness-of-Jailbreak-defense"><a href="#RQ2-Effectiveness-of-Jailbreak-defense" class="headerlink" title="RQ2:Effectiveness of Jailbreak defense"></a>RQ2:Effectiveness of Jailbreak defense</h2><p>其中最佳防御策略靠近图表的左上角，表示更低的DPR（防御通过率）和更高的BSR（良性成功率）。</p>
-<p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=OTFhM2RkMDk4YzgwNDQ1ZmJkZjU2ZTUwNDRmMTczZTJfWHBoNmtBME5BWURPV3hMTTZXUmlsYkxWNDl5azc5QnlfVG9rZW46S0JVQmJwVFdGb2p3elB4MVU5WWN5YW84blhkXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-<h2 id="Comparative-Performance-of-White-Box-and-Black-Box-Attacks"><a href="#Comparative-Performance-of-White-Box-and-Black-Box-Attacks" class="headerlink" title="Comparative Performance of White-Box and Black-Box Attacks"></a>Comparative Performance of White-Box and Black-Box Attacks</h2><p>具体而言，像AutoDan和GCG这样的依赖于模型内部机制（如损失指标）的白盒攻击方法，在性能上不如不需要访问模型内部且预先设计好的通用模板攻击方法。</p>
-<p>LLaMA模型在越狱攻击方面比Vicuna更具抵抗力，(虽然Vicuna是进化版本）这可能归因于其在开发阶段进行的全面安全训练。Vicuna在过程开始时的初始损失较高，但经过12步和五次成功的越狱尝试后，损失显著减少并趋于稳定。然而，其最终损失仍<strong>高于</strong>LLaMa。这些发现表明，在开发LLM时，整合先进的安全训练协议是至关重要的。</p>
-<h2 id="Impact-of-Special-Tokens-on-Jailbreak-Attack-Performance"><a href="#Impact-of-Special-Tokens-on-Jailbreak-Attack-Performance" class="headerlink" title="Impact of Special Tokens on Jailbreak Attack Performance"></a>Impact of Special Tokens on Jailbreak Attack Performance</h2><p>包含‘[&#x2F;INST]’标记的文本续写模板变得无效，这表明该标记可能暗示输入不完整，导致模型在生成响应之前进行补充。</p>
-<p>省略‘[&#x2F;INST]’标记的模板在角色扮演场景中表现较差，可能是因为这些场景需要更复杂的对话上下文和安全训练。</p>
-<p> Future research should extend beyond ‘[&#x2F;INST]’ to explore the effects of other special tokens, such as ‘«sys»’ and ‘’ on LLaMa and additional models.</p>
-<h2 id="6-3-Enhancing-Defense-Mechanisms-Against-Diverse-Malicious-Queries-增强针对多样恶意查询的防御机制"><a href="#6-3-Enhancing-Defense-Mechanisms-Against-Diverse-Malicious-Queries-增强针对多样恶意查询的防御机制" class="headerlink" title="6.3 Enhancing Defense Mechanisms Against Diverse Malicious Queries 增强针对多样恶意查询的防御机制"></a>6.3 Enhancing Defense Mechanisms Against Diverse Malicious Queries 增强针对多样恶意查询的防御机制</h2><h3 id="误分类问题"><a href="#误分类问题" class="headerlink" title="误分类问题"></a><strong>误分类问题</strong></h3><p>依赖于预定义的集合，这些集合经常将诸如“对不起，我不明白”这样的良性响应误分类为恶意响应</p>
-<p><img src="https://uestc.feishu.cn/space/api/box/stream/download/asynccode/?code=ODU4MGU0ZjU2NjUxZDA3N2U0MzI4MjcwZDRiYmU2YmFfQld6NXdPb29Mc0FCcU1VN3JsdThqek9EdWNiaDloWmFfVG9rZW46SklEdWJDU0Frb1lqbG14cTVPeGNxMmxrbmZkXzE3MjA5NTM1MTM6MTcyMDk1NzExM19WNA" alt="img"></p>
-<h3 id="Detection-Constraints-检测约束"><a href="#Detection-Constraints-检测约束" class="headerlink" title="Detection Constraints  检测约束"></a>Detection Constraints  检测约束</h3><p>表达和响应的多样性可能会使分类器不堪重负</p>
-<p>检测模型的效力本质上受到其模型特征（如参数数量、模型结构和训练数据集等）的限制。</p>
-<h3 id="Cost-Concerns"><a href="#Cost-Concerns" class="headerlink" title="Cost Concerns."></a>Cost Concerns.</h3><h3 id="Latency-Issues"><a href="#Latency-Issues" class="headerlink" title="Latency Issues."></a>Latency Issues.</h3><p>查询处理时间上显著延长，尤其是在处理复杂自然语言输入</p>
-<h2 id="7-Conclusions"><a href="#7-Conclusions" class="headerlink" title="7 Conclusions"></a>7 Conclusions</h2><p>九种攻击方法和七种防御机制</p>
-<p>在生成方法中，GPTFuzz在实验预算内表现最为有效</p>
-<p>目前的防御措施总体上效果不佳，尽管Bergeron方法表现相对较好</p>
-<p>研究观察到在Llama模型中使用‘[&#x2F;INST]’标记的影响，显示了特定标记在攻击成功率中的作用</p>
-<h2 id="未来"><a href="#未来" class="headerlink" title="未来"></a>未来</h2><p>需要进一步研究和开发能够更有效区分恶意和良性输入的防御技术。</p>
-<p>建立统一和标准化的评估方法，以提供一致的基准，并提高对不同防御策略的比较性和可靠性。</p>
-<h2 id="进一步探讨其他特殊标记（如’«sys»帮助模型区分用户输入和系统指令’和’通常表示序列的开始，用于初始化生成过程’）对不同模型的影响"><a href="#进一步探讨其他特殊标记（如’«sys»帮助模型区分用户输入和系统指令’和’通常表示序列的开始，用于初始化生成过程’）对不同模型的影响" class="headerlink" title="进一步探讨其他特殊标记（如’«sys»帮助模型区分用户输入和系统指令’和’通常表示序列的开始，用于初始化生成过程’）对不同模型的影响"></a>进一步探讨其他特殊标记（如’«sys»帮助模型区分用户输入和系统指令’和’<s>通常表示序列的开始，用于初始化生成过程’）对不同模型的影响</h2>
-    </div>
+    
+    <input
+        id="crypto"
+        :class="['input', cryptoStatus]"
+        :disabled="cryptoStatus === 'success'"
+        ref="crypto"
+        placeholder="文章被加密，请输入密码"
+        data-encrypted="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"
+        data-shasum="1af0e75e7dc8c78a52dc183831bfac8a8ee3599fe1b8511d4a538db10b16b13d"
+        v-model="crypto"
+    />
+    <transition name="fade">
+        <div class="content" ref="content" v-show="cryptoStatus === 'success'"></div>
+    </transition>
     
     
     
@@ -340,11 +199,11 @@
     <div id="footer-wrap">
         <div>
             &copy;
-            2022 - 2024 Hexo
+            2022 - 2024 JXCUSO4的博客
             <span id="footer-icon">
                 <i class="fa-solid fa-font-awesome fa-fw"></i>
             </span>
-            &commat;John Doe
+            &commat;JXCUSO4
         </div>
         <div>
             Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
