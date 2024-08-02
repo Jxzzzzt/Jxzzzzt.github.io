@@ -175,7 +175,39 @@
     </div>
     
     <div class="content" v-pre>
-        
+        <h1 id="Turning-Dust-into-Gold-Distilling-Complex-Reasoning-Capabilities-from-LLMs-by-Leveraging-Negative-Data"><a href="#Turning-Dust-into-Gold-Distilling-Complex-Reasoning-Capabilities-from-LLMs-by-Leveraging-Negative-Data" class="headerlink" title="Turning Dust into Gold: Distilling Complex Reasoning Capabilities from LLMs by Leveraging Negative Data"></a>Turning Dust into Gold: Distilling Complex Reasoning Capabilities from LLMs by Leveraging Negative Data</h1><h1 id="29821-Article-Text-33875-1-2-20240324-1-pdf-pdf"><a href="#29821-Article-Text-33875-1-2-20240324-1-pdf-pdf" class="headerlink" title="29821-Article Text-33875-1-2-20240324 (1).pdf.pdf)"></a><a href="..\..\..\..\浏览器\29821-Article Text-33875-1-2-20240324 (1">29821-Article Text-33875-1-2-20240324 (1).pdf</a>.pdf)</h1><h1 id="why"><a href="#why" class="headerlink" title="why"></a>why</h1><p>一种有前景的方法是通过生成的链式推理路径将LLMs的推理能力提炼到小模型中。然而，在某些情况下，LLMs可能会生成错误的推理链，尤其是在面对复杂的数学问题时。先前的研究只从正样本中转移知识，并丢弃了带有错误答案的合成数据。</p>
+<h1 id="what"><a href="#what" class="headerlink" title="what"></a>what</h1><p>链式推理（CoT）：</p>
+<p>CoT已被证明是具有超过1000亿参数的模型的一个突现特性，但较小模型却没有这种特性（Wei et al. 2022a）。这些模型的庞大计算需求和高推理成本限制了它们在资源有限的实际场景中的发展（Ho, Schmid, and Yun 2023）。因此，我们的研究目标是使小模型具备复杂的算术推理能力，以便大规模部署。</p>
+<p>知识蒸馏：</p>
+<p>一种将特定能力从LLMs转移到小模型的有前景的方法。这个过程也被称为模型专业化，强制紧凑模型专注于某些技能</p>
+<h1 id="how"><a href="#how" class="headerlink" title="how"></a>how</h1><p>提出了一个模型专业化框架，不仅包括正样本，还包括负样本进行蒸馏。</p>
+<p><img src="F:/%E6%9A%91%E6%9C%9F%E5%AE%9E%E9%AA%8C%E5%AE%A4/%E5%8D%9A%E5%AE%A2/source/_posts/image-20240725151403945-17218916470641.png" alt="image-20240725151403945"></p>
+<h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><h2 id="链式推理（Chain-of-Thought-Reasoning）"><a href="#链式推理（Chain-of-Thought-Reasoning）" class="headerlink" title="链式推理（Chain-of-Thought Reasoning）"></a>链式推理（Chain-of-Thought Reasoning）</h2><p>Least-to-most 提示（Zhou et al. 2023）建议明确地分解问题并逐步解决。自一致性（Self-Consistency，Wang et al. 2023）通过在多种不同推理链之间进行投票进一步提高了准确性。PHP 提出了通过迭代生成答案并将历史生成的答案作为提示添加到上下文中来实现答案的最终收敛（Zheng et al. 2023）。在这一迭代过程中生成的正确和错误答案都作为提示提供有效信息。</p>
+<p>（1）我们认为不仅生成的答案，而且推理链条也包含有价值的知识。</p>
+<p>（2）我们考虑在知识从大模型向小模型转移的过程中利用这些负样本，而不仅仅是在推理阶段。</p>
+<h2 id="从大模型中提炼知识（Distilling-Knowledge-from-Large-Models）"><a href="#从大模型中提炼知识（Distilling-Knowledge-from-Large-Models）" class="headerlink" title="从大模型中提炼知识（Distilling Knowledge from Large Models）"></a>从大模型中提炼知识（Distilling Knowledge from Large Models）</h2><p>许多研究（Ho, Schmid, and Yun 2023; Fu et al. 2023; Zhu et al. 2023）尝试通过直接在大语言模型生成的正确答案上微调小模型来进行硬提炼（hard distillation）。然而，如前所述，大语言模型生成的包含错误答案的响应也包含有价值的知识。直接丢弃这部分数据将是一种遗憾，特别是考虑到大语言模型在复杂推理任务中生成的响应中有相当大一部分是错误答案</p>
+<h2 id="从负面视角中学习（Learning-from-Negative-Views）"><a href="#从负面视角中学习（Learning-from-Negative-Views）" class="headerlink" title="从负面视角中学习（Learning from Negative Views）"></a>从负面视角中学习（Learning from Negative Views）</h2><p>许多方法只考虑在负样本中使用负训练信号。但实际上，负数据也可以提供有价值的正知识。在这项工作中，我们研究了如何全面利用负数据的正负两方面知识。</p>
+<h1 id="训练阶段"><a href="#训练阶段" class="headerlink" title="训练阶段"></a>训练阶段</h1><h2 id="链式思维蒸馏（Chain-of-Thought-Distillation）"><a href="#链式思维蒸馏（Chain-of-Thought-Distillation）" class="headerlink" title="链式思维蒸馏（Chain-of-Thought Distillation）"></a>链式思维蒸馏（Chain-of-Thought Distillation）</h2><p>D={(xi,yi)}N 为一个包含 N 个训练实例的数据集，其中 xi是问题，yi是其答案。给定额外的 M 个示例集 {d_i = (x^d_i, r^d_i,y^d_i)\}^M，其中 r 代表推理链，提示 {p_i = (d_1, …, d_M, x_i)\}^N被输入到大语言模型中并获得响应 {(r^i,y^i)}N。先前的工作（Ho, Schmid, and Yun 2023；Fu et al. 2023；Zelikman et al. 2022）保留了正样本 Spos 其中 y^=y，并最大化学生模型生成 (\hat{r}, \hat{y}) 的可能性，如下所示：</p>
+<script type="math/tex; mode=display">
+{E}_{(x, \hat{r}, \hat{y}) \sim S_{\text{pos}}} \log P(\hat{y}, \hat{r} | x; \theta).</script><h2 id="负辅助训练（NAT）"><a href="#负辅助训练（NAT）" class="headerlink" title="负辅助训练（NAT）"></a>负辅助训练（NAT）</h2><p>从负样本中提取有用知识而不受不良行为影响是一项具有挑战性的任务。为了解决这个问题，我们提出了两阶段的负辅助训练（NAT）范式</p>
+<p>双LoRA（Hu et al. 2022）结构设计用于捕获正负两方面的知识</p>
+<h3 id="吸收负知识（Absorbing-Negative-Knowledge）"><a href="#吸收负知识（Absorbing-Negative-Knowledge）" class="headerlink" title="吸收负知识（Absorbing Negative Knowledge）"></a>吸收负知识（Absorbing Negative Knowledge）</h3><p>为了全面学习大语言模型的多样化问题解决方法，我们为每个问题收集 8 个不同的响应，并根据 \hat{y} 是否等于 y 将这些样本分类为 Dpos 和 Dneg。首先考虑在 Dneg上训练一个负模型，然后从中提取有用知识。我们选择 LoRA 模块（Hu et al. 2022）进行参数高效微调，以<font color=red><strong>最大化</strong></font>以下期望：</p>
+<p><img src="F:/%E6%9A%91%E6%9C%9F%E5%AE%9E%E9%AA%8C%E5%AE%A4/%E5%8D%9A%E5%AE%A2/source/_posts/image-20240725155812273-17218942953143.png" alt="image-20240725155812273"></p>
+<p>在此过程中，LLaMA 的参数保持不变，而 Dneg 的知识被 LoRA θneg 吸收。我们将带有 θneg的 LLaMA 称为Mneg</p>
+<h3 id="动态集成单元（Dynamic-Integration-Unit）"><a href="#动态集成单元（Dynamic-Integration-Unit）" class="headerlink" title="动态集成单元（Dynamic Integration Unit）"></a>动态集成单元（Dynamic Integration Unit）</h3><p>由于不可能预先确定 θneg擅长哪些数学问题，我们设计了动态集成单元，以在 Dpos中正知识的学习过程中动态集成 θneg 的知识。</p>
+<p><img src="F:/%E6%9A%91%E6%9C%9F%E5%AE%9E%E9%AA%8C%E5%AE%A4/%E5%8D%9A%E5%AE%A2/source/_posts/image-20240725165421682-17218976633965.png" alt="image-20240725165421682"></p>
+<p>理想情况下，如果 hneg包含有益知识，我们应该积极地集成 hpos和 hneg，以补充 Dpos中的有益知识。当 hneg包含有害知识时，我们应该消极地集成 hpos 和 hneg，以减少 Dpos中可能的不良行为。我们提出了一种修正的注意力机制来实现这一目标，如下所示：</p>
+<script type="math/tex; mode=display">
+\alpha = W_Q(h_{\text{input}}) W_K([h_{\text{pos}}; h_{\text{neg}}])^T + [0.5; -0.5]</script><script type="math/tex; mode=display">
+h_{\text{output}} = \alpha \cdot W_V([h_{\text{pos}}; h_{\text{neg}}])</script><p><img src="F:/%E6%9A%91%E6%9C%9F%E5%AE%9E%E9%AA%8C%E5%AE%A4/%E5%8D%9A%E5%AE%A2/source/_posts/image-20240725173231185-17218999524127.png" alt="image-20240725173231185">。</p>
+ <font color=red>NAT，MNAT? </font>
+
+<h2 id="自我增强"><a href="#自我增强" class="headerlink" title="自我增强"></a>自我增强</h2><p>它包括两种常见的方法：一种是自我扩充（Xu et al. 2021），模型首先生成多样化的数据，然后在这些数据上进行训练以实现更好的泛化（Huang et al. 2022）；另一种是自我蒸馏（Zhu et al. 2023），通过使用模型本身作为教师进行迭代蒸馏，利用暗知识进一步提高性能。</p>
+<h3 id="负校准增强（NCE）"><a href="#负校准增强（NCE）" class="headerlink" title="负校准增强（NCE）"></a>负校准增强（NCE）</h3><p>利用负面知识来辅助自我增强过程（Zhu et al. 2023；Huang et al. 2022）。首先，我们使用 MNAT 为 D 中的每个问题生成 n 对 (r^,y^) 作为增强样本，并将它们补充到 Dpos中。对于自我蒸馏（Zhu et al. 2023；Liu et al. 2020），我们注意到某些样本可能包含更多关键推理步骤，这些步骤可以区分不同能力的推理者。我们的主要目标是<strong>识别这些关键推理</strong>，并在自我蒸馏过程中加强它们的学习。使用 KL 散度来衡量这种不一致，并最大化公式（8）中的期望，其中 θNCE表示 LoRA 模块参数：<img src="F:/%E6%9A%91%E6%9C%9F%E5%AE%9E%E9%AA%8C%E5%AE%A4/%E5%8D%9A%E5%AE%A2/source/_posts/image-20240725181717520.png" alt="image-20240725181717520"></p>
+<h1 id="推理过程"><a href="#推理过程" class="headerlink" title="推理过程"></a>推理过程</h1><h2 id="自适应自我一致性（ASC）"><a href="#自适应自我一致性（ASC）" class="headerlink" title="自适应自我一致性（ASC）"></a>自适应自我一致性（ASC）</h2><p>通过采样生成问题 x 的多个候选者${(\hat{r}_l, \hat{y}_l)\}^L$，并通过投票过程选择最一致的 $hat{y}$作为最终预测：</p>
+<script type="math/tex; mode=display">
+\hat{y} = \arg\max_{i} \sum_{l=1}^{L} I(\hat{y}_l = i)</script><p>其中 I(y^l=i)是指示函数（当 \hat{y} 等于答案 i 时等于 1，否则为 0）</p>
+
     </div>
     
     
