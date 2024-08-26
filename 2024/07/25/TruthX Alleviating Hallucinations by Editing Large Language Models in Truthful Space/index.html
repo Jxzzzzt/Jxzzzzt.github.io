@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title> | JXCUSO4的博客</title>
+    <meta name="author" content="JXCUSO4" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/star.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/KaTeX/0.16.9/katex.min.css" />
+<script src="/js/lib/math.js"></script>
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>JXCUSO4的博客</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;JXCUSO4的博客</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1></h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/25
+        </span>
+        
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="TruthX-Alleviating-Hallucinations-by-Editing-Large-Language-Models-in-Truthful-Space"><a href="#TruthX-Alleviating-Hallucinations-by-Editing-Large-Language-Models-in-Truthful-Space" class="headerlink" title="TruthX: Alleviating Hallucinations by Editing Large Language Models in Truthful Space"></a>TruthX: Alleviating Hallucinations by Editing Large Language Models in Truthful Space</h1><h2 id="why"><a href="#why" class="headerlink" title="why"></a>why</h2><p>大型语言模型有时会产生幻觉，特别是在模型明知正确答案的情况下仍生成不真实的回答。激活LLM内在的<strong>真实度</strong>是充分发挥其知识潜力的关键。</p>
+<h2 id="what"><a href="#what" class="headerlink" title="what"></a>what</h2><p>一种<strong>推理</strong>时干预的方法，通过识别和编辑LLM内部表示中的特征来激活其<strong>真实度</strong>。TruthX使用<strong>自动编码器</strong>（auto-encoder ）将LLM的表示映射到语义和真实的潜在空间，并应用<strong>对比学习（Contrastive Learning）</strong>来识别真实空间中的编辑方向。在推理过程中，通过在真实空间中编辑LLM的内部表示，TruthX有效地增强了LLM的真实度</p>
+<h2 id="how"><a href="#how" class="headerlink" title="how"></a>how</h2><p><strong>真实空间映射</strong>：利用<strong>自动编码器</strong>将模型的表示映射到语义和真实两个潜在空间，使得模型能够区分和利用这两种信息。</p>
+<p><strong>编辑方向识别</strong>：通过<strong>对比学习</strong>，确定在真实空间中的编辑方向，即如何调整模型的表示以提高其生成真实回答的能力。</p>
+<p><strong>推理时干预</strong>：在实际推理过程中，根据识别的编辑方向调整模型内部表示，从而提高回答的真实度。</p>
+<h2 id="生成幻觉"><a href="#生成幻觉" class="headerlink" title="生成幻觉"></a>生成幻觉</h2><h3 id="LLMs是否能在掌握正确知识的情况下持续生成真实的回答"><a href="#LLMs是否能在掌握正确知识的情况下持续生成真实的回答" class="headerlink" title="LLMs是否能在掌握正确知识的情况下持续生成真实的回答"></a>LLMs是否能在掌握正确知识的情况下持续生成真实的回答</h3><h3 id="LLMs的内部表示与输出的真实性之间存在相关性"><a href="#LLMs的内部表示与输出的真实性之间存在相关性" class="headerlink" title="LLMs的内部表示与输出的真实性之间存在相关性"></a>LLMs的内部表示与输出的真实性之间存在相关性</h3><p>一些错误的内部表示激活会导致LLMs即使知道正确的知识也会产生幻觉</p>
+<h2 id="方法分类"><a href="#方法分类" class="headerlink" title="方法分类"></a>方法分类</h2><h3 id="contrast-decoding"><a href="#contrast-decoding" class="headerlink" title="contrast decoding"></a>contrast decoding</h3><p>对比解码通过修改弱模型的幻觉来提高LLM的真实性</p>
+<h3 id="representation-editing"><a href="#representation-editing" class="headerlink" title="representation editing"></a>representation editing</h3><p>通过编辑模型表示可以实现任务如风格迁移（Subramani等，2022；Hernandez等，2023）和可控文本生成（Dathathri等，2020；Liu等，2022）。</p>
+<h4 id="编辑注意力头"><a href="#编辑注意力头" class="headerlink" title="编辑注意力头"></a>编辑注意力头</h4><p>仅编辑注意力头，以尽量减少对生成能力的干扰。</p>
+<p>这种方法的局限性在于，它<strong>忽略了FFN模块</strong>，后者通常被认为是知识记忆的重要部分。因此，仅编辑注意力头可能无法充分增强LLM的真实性。</p>
+<h5 id="推理时干预（ITI）"><a href="#推理时干预（ITI）" class="headerlink" title="推理时干预（ITI）"></a>推理时干预（ITI）</h5><h5 id="真实森林（TrFr）"><a href="#真实森林（TrFr）" class="headerlink" title="真实森林（TrFr）"></a>真实森林（TrFr）</h5><h4 id="编辑所有内部表示："><a href="#编辑所有内部表示：" class="headerlink" title="编辑所有内部表示："></a>编辑所有内部表示：</h4><h1 id="TruthX"><a href="#TruthX" class="headerlink" title="TruthX"></a>TruthX</h1><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723181736289.png" alt="image-20240723181736289"></p>
+<h2 id="a-提取内部表示"><a href="#a-提取内部表示" class="headerlink" title="(a) 提取内部表示"></a>(a) 提取内部表示</h2><ul>
+<li><p>标记样本：这些内部表示根据其响应的真实性被标记为正样本（真实）和<strong>负样本（不真实）</strong>。</p>
+<ul>
+<li><p>问题 “Are you a human?”，</p>
+</li>
+<li><p>真实回答可能是 “No, I’m an AI assistant.”</p>
+</li>
+<li><p>虚假的回答可能是 “Yes, I’m Bob.”</p>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>从LLM中提取内部表示</strong>：</p>
+<ul>
+<li>我们首先通过真实和不真实的响应刺激LLM，</li>
+<li>内部表示堆叠的Transformer（FFN和ATTN层通过残差连接相互连接）提取其内部表示，为了尽量减少因不同token语义引起的探测干扰，我们仅提取<strong>同时</strong>出现在Apos和Aneg中的那些token的内部表示，从而确保表示之间的最大语义相似性。<ul>
+<li>当面对真实和不真实的刺激时，我们提取注意力模块和FFN模块在每一层的输出表示，表示为Xpos = {xpos}和Xneg = {xneg}，其中xpos, xneg ∈ Rdmodel分别是相同token在真实/不真实刺激下的表示，dmodel是LLM隐藏状态的维度。</li>
+</ul>
+</li>
+</ul>
+<font color='orange'>取注意力模块和FFN模块在每一层的输出表示具体是什么</font>
+
+<p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240724153812288.png" alt="image-20240724153812288"></p>
+</li>
+</ul>
+<h2 id="b-使用自编码器进行探测"><a href="#b-使用自编码器进行探测" class="headerlink" title="(b) 使用自编码器进行探测"></a>(b) 使用自编码器进行探测</h2><p>自编码器包括一个<strong>真实编码器</strong>、一个<strong>语义编码器</strong>和一个<strong>解码器</strong>，全部由<strong>多层感知器（MLPs）</strong>实现，主要目标是通过编码器将LLM的内部表示映射到<strong>不同的潜在空间</strong>，然后通过解码器重建自身</p>
+<h3 id="表示重建（Representation-Reconstruction）"><a href="#表示重建（Representation-Reconstruction）" class="headerlink" title="表示重建（Representation Reconstruction）"></a>表示重建（Representation Reconstruction）</h3><p>首先，真实编码器TruthEnc(·)和语义编码器SemEnc(·)将内部表示x ∈ {Xpos, Xneg}分别映射到真实空间和语义空间：</p>
+<script type="math/tex; mode=display">
+h 
+truth
+​
+ =TruthEnc(x),h 
+sem
+​
+ =SemEnc(x)</script><p>然后，解码器Dec(·)从潜在空间表示中重建LLM的内部表示，</p>
+<script type="math/tex; mode=display">
+x 
+′
+ =Dec(h 
+sem
+​
+ +Attn(h 
+sem
+​
+ ,h 
+truth
+​
+ ))</script><p>Attn是从语义潜在表示（作为查询）到真实潜在表示（作为键和值）的注意力操作</p>
+<p>自编码器通过x’和x之间的重建损失Lrecon进行优化：</p>
+<script type="math/tex; mode=display">
+L 
+recon
+​
+ =MSE(x,x 
+′
+ )</script><font color='orange'>解码器和编码器</font>
+
+<p>编码器是一个多层感知机（MLP），通过一系列线性变换和非线性激活函数来学习输入数据的特征并生成低维的潜在表示。</p>
+<font color='orange'>输入：</font>提取注意力模块和FFN模块在每一层的输出表示，表示为Xpos = {xpos}和Xneg = {xneg}
+
+<font color='orange'>输出：</font>例如在真实空间，输出hL 就是潜在表示 htruth。这代表了输入数据在真实空间中的特征。
+
+### 对比学习（Contrastive Learning）
+
+目的是在真实空间内明确区分真实和不真实样本，并在语义空间内区分具有不同语义的样本。
+
+####  general objective of contrastive learning：
+
+对于空间中的表示s，我们构建一个包含相同类别的样本集S+和一个来自不同类别的样本集S−。对比学习通过最小化s与S+之间的距离，同时最大化s与S−之间的距离来对齐空间中的表示，其中训练目标计算如下：![image-20240723184408481](C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723184408481.png)
+$$
+
+$$
+sim(·, ·)表示表示之间的余弦相似性，τ = 0.1是温度参数
+
+<font color='orange'>CTR</font>
+
+<h4 id="本文实际"><a href="#本文实际" class="headerlink" title="本文实际"></a>本文实际</h4><p>正样本xpos ∈ Xpos在真实空间中的潜在表示集表示为Hpos truth，并将负样本xpos ∈ Xneg的潜在表示集表示为Hneg truth。类似地，将所有正负样本的语义潜在表示集表示为Hpos sem和Hneg sem。</p>
+<h5 id="真实空间："><a href="#真实空间：" class="headerlink" title="真实空间："></a>真实空间：</h5><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723185010024.png" alt="image-20240723185010024"></p>
+<p>给定的样本hpos truth</p>
+<font color='orange'>给定样本的pos和neg是怎么区分的,H和h是怎么区分</font>
+
+<p><strong>hpos truth</strong>：是那些在真实刺激（Q+Apos）下提取的表示。这些表示对应于LLM在生成真实回答时的内部表示。</p>
+<p><strong>hneg truth</strong>：是那些在不真实刺激（Q+Aneg）下提取的表示。这些表示对应于LLM在生成不真实回答时的内部表示。</p>
+<p>假设我们有以下三个样本：</p>
+<ul>
+<li>样本 1：Q1, Apos1, Aneg1</li>
+<li>样本 2：Q2, Apos2, Aneg2</li>
+<li>样本 3：Q3, Apos3, Aneg3</li>
+</ul>
+<p>对于每个样本，模型会生成对应的潜在表示：</p>
+<ul>
+<li><code>hpos_truth1</code> 是 Q1 + Apos1 的潜在表示。</li>
+<li><code>hneg_truth1</code> 是 Q1 + Aneg1 的潜在表示。</li>
+<li><code>hpos_truth2</code> 是 Q2 + Apos2 的潜在表示。</li>
+<li><code>hneg_truth2</code> 是 Q2 + Aneg2 的潜在表示。</li>
+<li><code>hpos_truth3</code> 是 Q3 + Apos3 的潜在表示。</li>
+<li><code>hneg_truth3</code> 是 Q3 + Aneg3 的潜在表示。</li>
+</ul>
+<p>那么，<code>Hpos_truth</code> 将包含所有 <code>hpos_truth</code>，即 <code>&#123;hpos_truth1, hpos_truth2, hpos_truth3&#125;</code>，而 <code>Hneg_truth</code> 将包含所有 <code>hneg_truth</code>，即 <code>&#123;hneg_truth1, hneg_truth2, hneg_truth3&#125;</code>。</p>
+<h5 id="语义空间："><a href="#语义空间：" class="headerlink" title="语义空间："></a>语义空间：</h5><p>语义空间中，具有不同token含义的样本的潜在表示应区分开。因此，对于给定的样本hpos sem，其对应的来自相同token但相反真实性的hneg sem形成S+，而具有相同真实性但不同含义的表示形成S−，Hpos sem \ hpos sem表示从集合Hpos sem中删除元素hpos sem</p>
+<p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723185951338.png" alt="image-20240723185951338"></p>
+<font color='orange'>why，对参数的定义</font>
+
+<p><strong>正样本集 S^+</strong></p>
+<p>在语义空间中，正样本集 S^+ 包含与给定样本语义相似的样本</p>
+<ul>
+<li><strong>正样本选择</strong>：对于 <script type="math/tex; mode=display">
+h_{\text{pos}}^{\text{sem}}</script>其对应的来自相同token但相反真实性的 hnegsem被选为正样本。这是因为它们共享相同的token，仅真实性不同，因此在语义上是相似的。</li>
+</ul>
+<p><strong>负样本集 S^-</strong></p>
+<p>在语义空间中，负样本集 S^-包含与给定样本语义不同的样本。</p>
+<ul>
+<li><p><strong>负样本选择</strong>：对于 hpossem，我们选择那些与其语义不同的样本作为负样本。在这里，我们从 Hpossem 集合中去除 hpossem 本身，形成负样本集。这是因为这些样本尽管在真实性上相同，但它们代表不同的token或上下文，因此在语义上是不同的。</p>
+<font color='orange'>Qestion    S-不是H possem∖h possem+H negsem∖h negsem   </font>
+
+</li>
+</ul>
+<h5 id="真实空间-语义空间"><a href="#真实空间-语义空间" class="headerlink" title="真实空间+语义空间"></a>真实空间+语义空间</h5><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723190345865.png" alt="image-20240723190345865"></p>
+<font color='orange'>输入：</font>![image-20240723214326785](C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723214326785.png)
+
+<font color='orange'>输出：</font>![image-20240723214013954](C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723214013954.png)
+
+### 真实度编辑Truthfulness Editing
+
+在将LLM的内部表示映射到真实和语义空间后，TruthX旨在编辑真实空间中的潜在表示并重建相应的表示。为了增强TruthX从编辑后的潜在表示中重建的能力，我们引入了编辑损失。
+
+#### 重建
+
+具体来说，对于一对具有相反真实性的(xpos, xneg)，我们交换其在真实空间中的潜在表示hpos truth ⇔ hneg truth，并通过    解码器分别重建(xneg, xpos)，表示如下：
+
+![image-20240723214642154](C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723214642154.png)
+
+<font color='orange'>为什么要用pos重建neg，为什么不用pos的语义重建pos的truth</font>
+
+<h4 id="为什么使用pos重建neg："><a href="#为什么使用pos重建neg：" class="headerlink" title=". 为什么使用pos重建neg："></a>. 为什么使用pos重建neg：</h4><ul>
+<li><strong>目标</strong>：通过这种交替重建的方式，模型可以学会在真实和不真实的条件下生成一致且准确的表示。具体来说：<ul>
+<li>当使用正样本的语义表示 hsemposh_{\text{sem}}^{\text{pos}}hsempos 和负样本的真实表示 htruthnegh_{\text{truth}}^{\text{neg}}htruthneg 进行重建时，模型需要学习如何在语义信息相同的情况下调整其生成的真实表示，使其与负样本的真实表示一致。</li>
+</ul>
+</li>
+</ul>
+<h4 id="为什么不直接使用pos的语义重建pos的truth："><a href="#为什么不直接使用pos的语义重建pos的truth：" class="headerlink" title="为什么不直接使用pos的语义重建pos的truth："></a>为什么不直接使用pos的语义重建pos的truth：</h4><ul>
+<li><strong>对比学习的需要</strong>：对比学习的核心在于通过比较不同条件下的样本，让模型学会区分真实和不真实的信息。如果只使用正样本的语义和真实表示进行重建，模型无法有效地学习到不真实样本的信息，从而在面对不真实的输入时表现不佳。</li>
+</ul>
+<h4 id="编辑损失"><a href="#编辑损失" class="headerlink" title="编辑损失"></a>编辑损失</h4><p>xpos→neg 是从hpos sem和hneg truth重建的，即从正真实性改变为负真实性，因此重建的表示应接近xneg。类似地，xneg→pos 应接近xpos。因此，编辑损失Ledit 为：</p>
+<p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723214902274.png" alt="image-20240723214902274"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723230931077.png" alt="image-20240723230931077"></p>
+<font color='orange'>这里Lrecon也是一个一步到位，没有使用对比学习和重建的，（和faith2的损失函数构造相似</font>
+
+<p>训练后，真实和不真实的表示在真实空间中表现出不同的分布。我们旨在识别真实的编辑方向，这个方向从不真实表示的中心指向真实表示的中心。形式上，真实的编辑方向δ ∈ Rdlatent计算如下：<img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723215320066.png" alt="image-20240723215320066"></p>
+<h2 id="c-在真实空间中进行编辑"><a href="#c-在真实空间中进行编辑" class="headerlink" title="(c) 在真实空间中进行编辑"></a>(c) 在真实空间中进行编辑</h2><ul>
+<li><p><strong>在真实空间中进行编辑（Editing in the Truthful Space）</strong>：</p>
+<ul>
+<li><p>计算真实度编辑方向 </p>
+<script type="math/tex; mode=display">
+δ= H_{\text{truth}}^{\text{pos}} - H_{\text{truth}}^{\text{neg}}</script></li>
+<li><p>将真实度编辑方向 δ转换为表示空间中的编辑方向 Δ</p>
+<script type="math/tex; mode=display">
+Delta = \text{Dec}(h_{\text{sem}} + \text{Attn}(h_{\text{sem}}, h_{\text{truth}} + \delta)) - \text{Dec}(h_{\text{sem}} + \text{Attn}(h_{\text{sem}}, h_{\text{truth}} - \delta))</script></li>
+<li><p>使用编辑方向 Δ 对LLM的内部表示进行实际编辑： </p>
+<script type="math/tex; mode=display">
+\hat{x} = x + \alpha \times \Delta</script></li>
+</ul>
+</li>
+</ul>
+<pre><code>通过这个编辑操作，将内部表示更新到更真实的方向。
+</code></pre><h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><p><strong>验证集上的探测准确度</strong>：</p>
+<ul>
+<li>首先，通过在验证集上评估每一层的探测准确度，确定哪些层在识别真实性方面表现最佳。探测准确度越高的层表示其对真实性特征的区分能力越强。</li>
+<li>探测准确度可以通过比较层输出表示与标注的真实性标签之间的一致性来计算。</li>
+</ul>
+<p><strong>选择层</strong>：</p>
+<ul>
+<li>基于探测准确度，选择前k个层（模块）进行编辑。例如，对于一个32层的LLM模型（每层包括一个注意力模块和一个FFN模块，总计64个模块），可以选择探测准确度最高的10个模块进行编辑。</li>
+</ul>
+<h1 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h1><h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><p><strong>TruthfulQA</strong>TruthfulQA包括两个任务：多项选择和开放式生成。在多项选择任务中，LLM从多个正确/错误选项中选择一个答案，通过多项选择准确率（MC1，MC2和MC3）进行评估。在开放式生成任务中，LLM直接生成答案。我们使用两个微调的GPT-3模型来判断答案是否真实和信息量充足，分别表示为True（%）和Info（%），而True*Info（%）作为主要指标。</p>
+<p><strong>Natural Questions</strong>（Kwiatkowski等人，2019）、<strong>TriviaQA</strong>（Joshi等人，2017）和<strong>FACTOR</strong>（新闻、专家、维基）（Muhlgay等人，2023）：这些是用于问答、阅读理解和事实性评估的基准。我们直接使用在TruthfulQA数据上训练的TruthX模型来评估其分布外的泛化能力。</p>
+<h2 id="BASELINES"><a href="#BASELINES" class="headerlink" title="BASELINES"></a>BASELINES</h2><p><strong>Baseline</strong>:原始的Llama-2-7B-Chat模型（Touvron等人，2023b）。</p>
+<p><strong>Supervised Finetuning</strong>：</p>
+<p><strong>Contrastive Decoding</strong>：</p>
+<p><strong>Representation Editing</strong>：</p>
+<p><strong>TruthX</strong>：</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>在TruthX中，真实编码器和语义编码器由2层MLPs组成，维度为[4096→2048, 2048→1024]，解码器由2层MLPs组成，维度为[1024→2048, 2048→4096]。</p>
+<p><strong>附录A</strong></p>
+<p>TruthX使用Adam优化器，学习率为1e-4。根据验证集的性能，我们设置编辑层数为k=10，编辑强度为α=1.0（开放式生成任务）和α=4.5（多项选择任务）。</p>
+<h2 id="实验结果分析"><a href="#实验结果分析" class="headerlink" title="实验结果分析"></a>实验结果分析</h2><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240724000636996.png" alt="image-20240724000636996"></p>
+<p>Table 1展示了TruthX与之前方法在TruthfulQA上的比较，TruthX在开放式生成和多项选择任务中均取得了最佳结果，在True*Info分数和MC1上分别比Llama-2-7B-Chat提高了约33%和20%。</p>
+<p><strong>与对比解码方法的比较</strong>：TruthX直接在解码过程中增强内部表示的真实性，不需要额外的模型或两次解码，因此以更高效的方式提高了真实性。</p>
+<p><strong>与ITI和TrFr的比较</strong>：TruthX展示了显著的优势，主要有两个原因：</p>
+<ol>
+<li>与ITI和TrFr在注意力头中增强注意力模式中的真实性不同，TruthX编辑来自注意力和FFN模块的内部表示</li>
+<li>TruthX并不直接编辑LLM的表示，而是将其映射到语义和真实空间，并在真实空间中进行编辑</li>
+</ol>
+<p><strong>更广泛基准上的泛化能力</strong></p>
+<p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240724000853918.png" alt="image-20240724000853918"></p>
+<p><strong>Table 2</strong>展示了TruthX在更多基准上的性能，我们直接使用在TruthfulQA上训练的TruthX模型评估其分布外的泛化能力。结果表明，TruthX在转移到完全新领域时不会破坏LLM的性能，在某些与真实世界真实性强相关的领域（如Natural Questions和FACTOR-news）中，TruthX甚至实现了一些提升。TruthX在各个领域中表现出更强的泛化能力，主要是因为它仅在真实空间中编辑LLM，而不会损害其语义和生成能力。</p>
+<p><strong>对更多LLM的结果</strong></p>
+<p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240724000950926.png" alt="image-20240724000950926"></p>
+<p>展示了TruthX在不同LLM上的改进效果，我们将TruthX应用于13个先进的LLM，并在TruthfulQA基准上展示了改进效果。对于不同规模的LLM，如Llama-2-7B-Chat（隐藏维度为4096）和Llama-2-13B-Chat（隐藏维度为5120），TruthX一致地增强了真实性。当应用于不同的LLM时，TruthX增强了所有LLM的真实性，平均提高了20%的True*Info分数和15%的MC1准确率。这突显了TruthX在不同LLM上的通用性。</p>
+<h1 id="总结分析"><a href="#总结分析" class="headerlink" title="总结分析"></a>总结分析</h1><h4 id="消融研究"><a href="#消融研究" class="headerlink" title="消融研究"></a>消融研究</h4><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240724001353437.png" alt="image-20240724001353437"></p>
+<p>在表3中，我们进行了TruthX的消融研究，分析了数据构建、架构和训练目标的每个模块的有效性。</p>
+<h4 id="在真实空间中编辑的优势"><a href="#在真实空间中编辑的优势" class="headerlink" title="在真实空间中编辑的优势"></a>在真实空间中编辑的优势</h4><p><strong>真实度方向</strong>：为了确定TruthX是否在真实空间中学到了合理的真实度方向δ\deltaδ，我们比较了沿不同方向编辑LLM的效果（见表4）。结果表明，在语义空间中编辑不会影响LLM的真实性，而在真实空间中编辑直接决定了真实性。沿着δ编辑带来了20%的MC1改进，而沿着−δ编辑则导致19%的MC1下降。此外，“随机δ”和“正交δ”对真实性的影响微乎其微，这表明TruthX确实在真实空间中识别了一个真实度方向。表5给出了沿着±δ\deltaδ编辑的示例，展示了TruthX控制LLM真实性的能力。</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 JXCUSO4的博客
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;JXCUSO4
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
