@@ -186,512 +186,8 @@
         
 
 <div class="post">
-    <a href="/2024/08/26/PaD%20Program-aided%20Distillation%20Can%20Teach%20Small%20Models%20Reasoning%20Better%20than%20Chain-of-thought%20Fine-tuning/">
-        <h2 class="post-title"></h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2024/8/26
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <p>title: &gt;-<br>  暑期文献阅读七   Turning Dust into Gold拓展二   </p>
-<p>PaD: Program-aided Distillation Can Teach Small Models Reasoning Better than Chain-of-thought Fine-tuning<br>tags:<br>secret: “123456”<br>description: |<br>    Normal _Italic_ <strong>Strong</strong></p>
-<h1 id="PaD-Program-aided-Distillation-Can-Teach-Small-Models-Reasoning-Better-than-Chain-of-thought-Fine-tuning"><a href="#PaD-Program-aided-Distillation-Can-Teach-Small-Models-Reasoning-Better-than-Chain-of-thought-Fine-tuning" class="headerlink" title="PaD: Program-aided Distillation Can Teach Small Models Reasoning Better than Chain-of-thought Fine-tuning"></a>PaD: Program-aided Distillation Can Teach Small Models Reasoning Better than Chain-of-thought Fine-tuning</h1><h1 id="why"><a href="#why" class="headerlink" title="why"></a>why</h1><p>先前的工作利用LLMs合成数据，然后微调较小的模型，或对齐预测分布以蒸馏LLMs（Ho et al., 2022; Fu et al., 2023; Hsieh et al., 2023; Wang et al., 2023; Kang et al., 2024）。数据合成范式受链式推理（CoT, Wei et al., 2022）提示的启发。CoT提示引导LLMs生成中间步骤，这显著提高了推理性能。然后，数据合成要求LLMs生成CoT，这些CoT被整理成下游微调数据集。这些CoT数据用于微调较小的模型，从而传递推理能力。然而，LLMs经常产生错误的推理，即它们可能提供正确的最终答案但中间推理步骤不正确（d’Avila Garcez and Lamb, 2020; Frieder et al., 2023）。这种数据中的错误推理会在微调过程中混淆小模型，并阻碍推理能力的学习。此外，现成的强大LLMs是黑箱（例如，ChatGPT），无法访问预测分布。这一特性阻碍了直接对齐LLMs和较小模型之间的分布。</p>
-<h1 id="what"><a href="#what" class="headerlink" title="what"></a>what</h1><p>提出了程序辅助蒸馏（PaD），一种利用LLMs生成的合成推理程序来微调较小模型的方法。</p>
-<p><strong>三个贡献：</strong></p>
-<p>一种新颖的方法，通过合成推理程序并自动过滤错误推理，将LLMs的推理能力蒸馏到较小的模型中。PaD采用自我改进和逐步验证分别进一步学习和指导推理生成。</p>
-<p>实验结果表明，通过PaD蒸馏的专业模型在大幅减少模型和数据规模的情况下，性能超过了先前的基线模型，并超越了某些LLMs（例如LLaMA）。</p>
-<p>我们进一步发现，PaD缩小了模型的输出空间，使其避免在整个自然语言空间中进行采样，从而比CoT微调实现更低的损失。</p>
-<h1 id="how"><a href="#how" class="headerlink" title="how"></a>how</h1><h2 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h2><h3 id="Knowledge-Distillation-from-Large-Models"><a href="#Knowledge-Distillation-from-Large-Models" class="headerlink" title="Knowledge Distillation from Large Models"></a>Knowledge Distillation from Large Models</h3><h4 id="蒸馏方法分类"><a href="#蒸馏方法分类" class="headerlink" title="蒸馏方法分类"></a>蒸馏方法分类</h4><p>知识蒸馏的方法大致可以分为两类：基于预测的方法和基于中间特征的方法。</p>
-<p><strong>基于预测的方法</strong></p>
-<ol>
-<li><strong>任务特定数据合成</strong>：通过教师模型生成特定任务的数据。这些数据通常包含特定的推理链和预测分布。例如，Ho et al. (2022) 使用教师模型的多步推理输出微调较小的模型。Fu et al. (2023) 则采用链式推理数据和预测分布来专门化小模型。</li>
-<li><strong>指令调优框架</strong>：例如，Hsieh et al. (2023) 和 Chan et al. 提取推理链并将这些数据整合到指令调优框架中。Wang et al. (2022) 提出 Self-Instruct 方法，通过自身指导来提高模型性能。</li>
-</ol>
-<p><strong>基于中间特征的方法</strong></p>
-<ol>
-<li><strong>统计信息对齐</strong>：例如，Nayak et al. (2019) 和 Chen et al. (2021a) 通过 KL 散度将学生的 softmax 空间与教师模型对齐。</li>
-<li><strong>激活记录对齐</strong>：例如，Lopes et al. (2017) 提出最小化教师和学生之间的激活记录距离。</li>
-<li><strong>伪数据恢复</strong>：例如，Dream Distillation (Bhardwaj et al., 2019) 使用激活向量作为元数据来恢复伪数据。</li>
-<li><strong>共享梯度</strong>：例如，来自公共学习系统的共享梯度也有助于模拟学习过程（Zhu et al., 2019；Geiping et al., 2020；Yin et al., 2021）。</li>
-</ol>
-<font  color=Salmon  > 上述方法通常依赖于访问教师模型的参数，为了解决这一问题，自蒸馏（Mobahi et al., 2020）提出了一种无需教师模型参数的方法，使用**学生模型自身作为教师进行迭代改进**。</font>
-
-<h3 id="链式推理（Chain-of-Thought-Reasoning）"><a href="#链式推理（Chain-of-Thought-Reasoning）" class="headerlink" title="链式推理（Chain-of-Thought Reasoning）"></a>链式推理（Chain-of-Thought Reasoning）</h3><p><strong>零样本链式推理（Zero-shot CoT）</strong>：</p>
-<ul>
-<li>由 Kojima et al. (2022) 提出，通过生成和预测最终答案来进行推理，无需预先训练样本。</li>
-<li>这种方法利用模型自身的生成能力，直接生成推理过程和最终答案。</li>
-</ul>
-<p><strong>自一致性（Self-Consistency）</strong>：</p>
-<ul>
-<li>Wang et al. (2022) 提出，通过对多个 CoT 进行采样，并选择最一致的一个，从而提高推理的准确性。</li>
-<li>这种方法通过对多个推理路径进行评估，选择最有可能的正确路径。</li>
-</ul>
-<p><strong>最少到最多提示（Least-to-Most Prompting）</strong>：</p>
-<ul>
-<li>Zhou et al. (2023b) 提出，将复杂问题分解为更小的子问题，并迭代地解决这些小问题。</li>
-<li>这种方法通过逐步解决子问题，逐渐构建完整的解决方案。</li>
-</ul>
-<p><strong>PAL（程序辅助推理）</strong>：</p>
-<ul>
-<li>Gao et al. (2022) 提出，通过将推理形式化为数学公式和代码，来简化链式推理。</li>
-<li>这种方法利用程序和公式，使推理过程更加结构化和易于验证。</li>
-</ul>
-<p><strong>分解推理步骤并进行评估</strong>：</p>
-<ul>
-<li>Li et al. (2022)、Xie et al. (2023) 和 Ling et al. (2023) 提出，将推理步骤分解，并对每个步骤进行评估，以指导后续的解码。</li>
-<li>这种方法通过逐步验证每个推理步骤，确保每一步都是合理的，从而提高整体推理的准确性。</li>
-</ul>
-<font color=Salmon >我们提出了一种逐步波束搜索方法，以逐步验证推理步骤。主要特点包括：</font>
-
-<ol>
-<li><strong>逐步验证</strong>：<ul>
-<li>每一步推理都进行验证，确保其正确性。</li>
-<li>这种方法通过逐步筛选和优化，每一步都选择最优的推理路径。</li>
-</ul>
-</li>
-<li><strong>程序作为推理格式</strong>：<ul>
-<li>选择程序（如代码）作为推理的表达形式。</li>
-<li>程序格式更适合小模型，因为它结构化且简洁，便于逐步验证和调整。</li>
-</ul>
-</li>
-</ol>
-<h2 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h2><h3 id="从-LLMs-合成数据Synthesizing-Data-From-LLMs"><a href="#从-LLMs-合成数据Synthesizing-Data-From-LLMs" class="headerlink" title="从 LLMs 合成数据Synthesizing Data From LLMs"></a>从 LLMs 合成数据Synthesizing Data From LLMs</h3><p><img src="F:/%E6%9A%91%E6%9C%9F%E5%AE%9E%E9%AA%8C%E5%AE%A4/%E5%8D%9A%E5%AE%A2/source/_posts/%E6%96%B0%E5%BB%BA%E6%96%87%E4%BB%B6%E5%A4%B9/image-20240727144811481.png" alt="image-20240727144811481"></p>
-<h4 id="数据合成-Data-Synthesis"><a href="#数据合成-Data-Synthesis" class="headerlink" title="数据合成 Data Synthesis"></a>数据合成 Data Synthesis</h4><p>数据合成是利用大语言模型（LLMs）生成高质量推理数据的过程。通过上下文学习，我们可以在不更新模型参数的情况下，仅基于提供的上下文示例，让 LLMs 生成所需的推理程序。</p>
-<p>如图3所示，我们手动构建一个推理程序的问题-答案对，然后将它们与所需的问题结合，从 LLMs 中推导出推理程序。我们将数据合成过程公式化如下：给定一个推理数据集 D 及其问题-答案对样本 $(x_i, y_i) \in D$，我们首先构建上下文示例。每个示例是一个三元组$(\hat{x}_i, \hat{r}_i, \hat{y}_i)$，其中 $\hat{r}$ 表示推理程序。假设有一些上下文示例$C = \{(\hat{x}_1, \hat{r}_1, \hat{y}_1), (\hat{x}_2, \hat{r}_2, \hat{y}_2), …, (\hat{x}_n, \hat{r}_n, \hat{y}_n)\}$，即多个三元组，LLM M应该在上下文示例 C和输入问题 $x_i$的条件下生成相应的推理程序 $r_i$。具体来说，x 表示问题，y 表示答案，r 表示推理程序，C 表示上下文示例。总结来说，我们将数据合成公式化如下：</p>
-<p>$r_i = f_M(x_i, C)$</p>
-<p>如图所示，将上下文 C作为前缀添加到输入问题 $x_i$。然后，LLM 模拟上下文中的形式提供相应的推理程序$r_i$。此外，我们添加多个示例以获得更精确的推理程序（Wei et al., 2022; Ho et al., 2022）。在数据合成中，不需要 LLMs 输出答案 $y_i$，因为答案可以通过执行推理程序轻松获得。通过这种方法，我们可以获得一个初步的微调数据集 S。</p>
-<h4 id="数据过滤-Data-Filtering"><a href="#数据过滤-Data-Filtering" class="headerlink" title="数据过滤 Data Filtering"></a>数据过滤 Data Filtering</h4><p>数据过滤是提高数据集质量的关键步骤。先前的方法中，生成的数据往往包含错误的推理步骤，这会影响小模型的性能。</p>
-<ol>
-<li><strong>错误识别</strong>：<ul>
-<li>利用 Python 解释器自动识别和消除错误样本。</li>
-<li>错误可以分为两类：错误答案和语法错误的代码。</li>
-</ul>
-</li>
-<li><strong>改进数据集</strong>：<ul>
-<li>通过过滤错误样本，改进微调数据集的质量。</li>
-<li>高质量的数据集可以显著提高小模型的性能。</li>
-</ul>
-</li>
-</ol>
-<h4 id="数据增强-Augmentation"><a href="#数据增强-Augmentation" class="headerlink" title="数据增强 Augmentation"></a>数据增强 Augmentation</h4><p>由于一个问题可以对应多个解决方案，并且多样化的推理数据可以提高性能（Wang et al., 2022; Ho et al., 2022），我们使用<strong>不同的上下文</strong>为<strong>同一问题</strong>合成不同的推理程序。这种增强提高了数据的多样性。在增强和数据过滤之后，我们获得了一个高质量的数据集 S</p>
-<h3 id="微调小模型-Fine-tuning-Small-Models"><a href="#微调小模型-Fine-tuning-Small-Models" class="headerlink" title="微调小模型 Fine-tuning Small Models"></a>微调小模型 Fine-tuning Small Models</h3><p><img src="F:/%E6%9A%91%E6%9C%9F%E5%AE%9E%E9%AA%8C%E5%AE%A4/%E5%8D%9A%E5%AE%A2/source/_posts/%E6%96%B0%E5%BB%BA%E6%96%87%E4%BB%B6%E5%A4%B9/image-20240727151902486.png" alt="image-20240727151902486"></p>
-<p><strong>参数初始化</strong>：</p>
-<ul>
-<li>使用预训练模型来初始化小模型的参数。这是 NLP 中的常见做法，因为预训练模型已经在大规模数据上学习到了丰富的语言表示，能够为下游任务提供良好的起点。</li>
-</ul>
-<p><strong>数据集准备</strong>：</p>
-<ul>
-<li>使用经过数据合成和过滤处理后的高质量数据集 SSS。这些数据包含了结构化的推理程序，有助于提升模型的推理能力。</li>
-</ul>
-<p><strong>模型微调</strong>：</p>
-<ul>
-<li><p>采用标准的序列到序列（seq2seq）模型对小模型进行微调。seq2seq 模型适用于各种 NLP 任务，特别是那些涉及生成的任务，如翻译和文本生成。</p>
-</li>
-<li><p>使用交叉熵损失函数来指导模型的训练过程。交叉熵损失衡量了模型预测的概率分布与实际分布之间的差异，目标是最小化这种差异。</p>
-<p>$L_{fine-tune}=−∑_{t=1}(/hat{T}<br>)logP(r_{i,t}∣r_{i,&lt;t},xi)$</p>
-<p>对于每个时间步 t，损失函数计算模型生成的令牌 $r_{i,t}$的概率 $\log P(r_{i,t} | r_{i,&lt;t}, x_i)$，并累加整个序列的损失。</p>
-<p><strong>符号定义</strong>：</p>
-<ul>
-<li><strong>$t$</strong>：时间步，对应于序列中的令牌位置。</li>
-<li><strong>i</strong>：样本索引，对应于数据集 S 中的一个具体样本。</li>
-<li><strong>$x_i$</strong>：数据集 S 中的第 i 个问题。</li>
-<li><strong>$r_{i,t}$</strong>：在时间步 t模型生成的令牌。</li>
-<li><strong>$r_{i,&lt;t}$</strong>：在时间步 t之前生成的所有令牌序列</li>
-</ul>
-</li>
-</ul>
-<h3 id="自我改进-Self-Refinement"><a href="#自我改进-Self-Refinement" class="headerlink" title="自我改进 Self-Refinement"></a>自我改进 Self-Refinement</h3><p><img src="F:/%E6%9A%91%E6%9C%9F%E5%AE%9E%E9%AA%8C%E5%AE%A4/%E5%8D%9A%E5%AE%A2/source/_posts/%E6%96%B0%E5%BB%BA%E6%96%87%E4%BB%B6%E5%A4%B9/image-20240727151926868.png" alt="image-20240727151926868"></p>
-<p>自我改进的目标是使模型能够从错误反馈中学习，从而改进其推理能力。通过将自我改进能力嵌入小模型中，模型可以在面对错误时自我调整和优化，提高整体推理性能。</p>
-<p><strong>多任务学习方法</strong></p>
-<ol>
-<li><strong>多任务学习设置</strong>：<ul>
-<li><strong>推理任务</strong>：模型接收一个问题 x 并生成相应的推理程序 r。</li>
-<li><strong>改进任务</strong>：模型接收一个问题 x 和错误代码 r′，并生成改进后的推理程序 r。</li>
-</ul>
-</li>
-<li><strong>任务对齐</strong>：<ul>
-<li>推理和改进任务的学习目标是生成准确的推理程序。</li>
-<li>通过将这两个任务结合起来，模型在训练过程中可以同时学习如何进行初始推理和如何在遇到错误时进行改进。</li>
-</ul>
-</li>
-</ol>
-<p><strong>错误数据集的构建</strong></p>
-<p>为了训练模型进行自我改进，我们需要一个包含错误样本和错误反馈的数据集。</p>
-<ol>
-<li><strong>错误注入</strong>：<ul>
-<li>使用 Python 工具从源代码中提取抽象语法树（AST）。</li>
-<li>遍历 AST 的各种节点（如变量名和函数定义），并通过对选定节点执行特定操作来注入错误。</li>
-<li>例如，更改变量名引发 NameError，在赋值前引用变量引发 UnboundLocalError，错误插入 ‘return’ 语句引发 SyntaxError。</li>
-</ul>
-</li>
-<li><strong>收集错误反馈</strong>：<ul>
-<li>将更改后的 AST 转回源代码格式并执行该修改代码。</li>
-<li>收集注入错误的错误消息、原始问题的解决方案和准确代码。</li>
-<li>通过这种方式，我们获得了一个包含特定类型错误代码样本及其相应错误消息的详细数据集。</li>
-</ul>
-</li>
-</ol>
-<h3 id="逐步验证-Step-by-Step-Verification"><a href="#逐步验证-Step-by-Step-Verification" class="headerlink" title="逐步验证 Step-by-Step Verification"></a>逐步验证 Step-by-Step Verification</h3><p><img src="F:/%E6%9A%91%E6%9C%9F%E5%AE%9E%E9%AA%8C%E5%AE%A4/%E5%8D%9A%E5%AE%A2/source/_posts/%E6%96%B0%E5%BB%BA%E6%96%87%E4%BB%B6%E5%A4%B9/image-20240727151943076.png" alt="image-20240727151943076"></p>
-<p><strong>生成候选步骤</strong>：</p>
-<ul>
-<li>在生成过程中，模型会生成多个候选步骤。</li>
-<li>对这些候选步骤进行评分，并选择最可信的步骤来继续推理。</li>
-</ul>
-<p><strong>推理生成过程分解</strong>：</p>
-<ul>
-<li>将推理生成过程 $P(r|x)$ 分解为一系列自回归步骤 $r = [r_1, \ldots, r_t]$</li>
-<li>这种分解允许对每个中间步骤进行单独的验证和优化。</li>
-</ul>
-<p><strong>评分函数的建立</strong>：</p>
-<ul>
-<li>使用预训练的推理评分器，通过匹配源文本和候选推理步骤的嵌入来估计语义对齐。</li>
-<li>评分函数 $ ψ(ri∣x)=\text{align}(r_i \rightarrow x)$使用余弦相似度作为对齐函数。</li>
-</ul>
-<p><strong>步骤级别的波束搜索</strong>：</p>
-<ul>
-<li>引入约束评分函数扩展了传统的标记级波束搜索。</li>
-<li>评分函数引导生成过程朝向更可信的步骤。</li>
-<li>最终的逐步波束搜索公式为： $E(r_{1:T}) = P_M(r_t | x, r_{1:t-1}) \psi(r_t | x)$, 其中 $P_M(r_t | x, r_{1:t-1})$ 表示单个步骤中标记的联合概率。</li>
-</ul>
-
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2024/08/26/PaD%20Program-aided%20Distillation%20Can%20Teach%20Small%20Models%20Reasoning%20Better%20than%20Chain-of-thought%20Fine-tuning/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2024/08/26/%E6%9A%91%E6%9C%9F%E5%AD%A6%E4%B9%A0LLM/">
-        <h2 class="post-title"></h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2024/8/26
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <p>!(C:\Users\Jerry\AppData\Roaming\Typora\typora-user-images\image-20240626160142407.png)</p>
-<ol>
-<li><ul>
-<li><ul>
-<li></li>
-</ul>
-</li>
-</ul>
-</li>
-</ol>
-<p><img src="C:\Users\Jerry\AppData\Roaming\Typora\typora-user-images\image-20240622202550816.png" alt="image-20240622202550816"></p>
-<h2 id="评估模型中的偏差并且引入了称为偏差攻击指令的提示，该提示专门用于评估模型偏差："><a href="#评估模型中的偏差并且引入了称为偏差攻击指令的提示，该提示专门用于评估模型偏差：" class="headerlink" title="评估模型中的偏差并且引入了称为偏差攻击指令的提示，该提示专门用于评估模型偏差："></a>评估模型中的偏差并且引入了称为偏差攻击指令的提示，该提示专门用于评估模型偏差：</h2><h3 id="输入的问题的检测（偏差攻击指令）：越狱攻击，变异语义"><a href="#输入的问题的检测（偏差攻击指令）：越狱攻击，变异语义" class="headerlink" title="输入的问题的检测（偏差攻击指令）：越狱攻击，变异语义"></a>输入的问题的检测（偏差攻击指令）：越狱攻击，变异语义</h3><h3 id="输出内容的检测"><a href="#输出内容的检测" class="headerlink" title="输出内容的检测"></a>输出内容的检测</h3><ol>
-<li><p>回答有偏向</p>
-<p>content does not need to be demonstrably false to cause harm. This leads to  another set of concerns that can occur when language models produce text that is  biased (e.g., regarding race, gender, religion, or other categories) or toxic. Research has  tested and found evidence of biases related to political ideology, religion, gender, and  more in specific models.7Another line of research has traced biases in language  models to the training data and noted that content excluded from training data based  on certain keywords can disproportionately remove text from and about members of  various minority groups.Toxic content from LLMs may be particularly problematic if  shown to children or other vulnerable groups. </p>
-</li>
-</ol>
-<p><img src="C:\Users\Jerry\AppData\Roaming\Typora\typora-user-images\image-20240622211950967.png" alt="image-20240622211950967"></p>
-<p>2.利用变异语法，“恶意使用”</p>
-<p> there are also worries about bad actors using language models intentionally  for “malicious use.”One worst-case scenario that has received public attention is the  risk of a bad actor using a language model to learn how to create a homegrown bomb‘</p>
-<p>3.幻觉“hallucinations“</p>
-<p>检测：</p>
-<p>1.毒性过滤器</p>
-<p>At the post-output stage, once the LLM has composed a response to a prompt but  before that output has been shown to the user, developers can employ additional  checks and filters. One option is to train a separate machine learning model—often  referred to as a “toxicity filter”39—to detect harmful content, then use that model to  catch outputs before they can be shown to users. Like supervised fine-tuning, these  techniques rely on human-labeled data. While they have demonstrably positive effects  on how toxic LLM outputs are, labeling the datasets of harmful content that are used  to train the detection models is often actively harmful to workers’ mental health.</p>
-<p>2.DeepEval[31]、HELM [32]和LangKit [33]</p>
-<p>相关论文</p>
-<p> <a href="..\浏览器\s43681-023-00289-2 (1">s43681-023-00289-2 (1).pdf</a>.pdf) </p>
-<p>• RQ1：与单独训练多个二元分类模型相比，在多类环境中训练刻板印象检测器能否带来更好的结果？</p>
-<p>• RQ2：为刻板印象检测而构建的多标签分类器与竞争基线相比如何？</p>
-<p>• RQ3：经过训练的模型在检测刻板印象时是否利用了正确的模式？</p>
-<p>• RQ4：当今最先进的 LLM 在参考拟议的刻板印象检测器时有多公正？</p>
-<p>为了解决 RQ1 和 RQ2，我们开发了多粒度刻板印象 （MGS） 数据集（第 3.1 节）并微调了 Distil-BERT 模型（第 3.2 节）。</p>
-<p>对于 RQ3，我们使用 XAI 技术 SHAP、LIME 和 BertViz 来解释预测（第 3.2 节）。</p>
-<p>最后，对于 RQ4，我们使用提出的 MGS 数据集生成提示，以从 LLM 中引出刻板印象，并使用我们的分类器对其进行评估（第 3.3 节）。</p>
-<p>关于评估模型偏差的方法</p>
-<ul>
-<li><strong>基于向量的距离</strong>：需要高质量的向量表示和标记数据。</li>
-<li><strong>绩效差异</strong>：需要大量标记数据，且只能反映特定任务上的偏差。</li>
-<li><strong>有偏见的内容概率</strong>：依赖生成数据和模型权重的访问，可能无法全面覆盖所有偏见。</li>
-</ul>
-<h3 id="GPTBIAS"><a href="#GPTBIAS" class="headerlink" title="GPTBIAS"></a>GPTBIAS</h3><p>为克服上述局限性，提出了一种适应性更强、更有效的解决方案，称为GPTBIAS，用于评估大型语言模型中的偏差。GPTBIAS综合了多种偏差检测方法，并针对不同类型的偏差提供更全面的评估。</p>
-<h3 id="内容合规性，什么是不合规呢，"><a href="#内容合规性，什么是不合规呢，" class="headerlink" title="内容合规性，什么是不合规呢，"></a><strong>内容合规性，什么是不合规呢，</strong></h3><p><img src="C:\Users\Jerry\AppData\Roaming\Typora\typora-user-images\image-20240630200452725.png" alt="image-20240630200452725"></p>
-<h4 id="1-虚假信息，"><a href="#1-虚假信息，" class="headerlink" title="1.虚假信息，"></a>1.虚假信息，</h4><p>即幻觉hallucinations，幻觉的发生本质上是从参数化记忆中找到相似的语料库来捏造不存在的答案</p>
-<h3 id="2-偏见"><a href="#2-偏见" class="headerlink" title="2.偏见"></a>2.偏见</h3><p>生成有偏见内容的，宗教，性别，种族等</p>
-<h3 id="为什么会产生不合规信息呢"><a href="#为什么会产生不合规信息呢" class="headerlink" title="为什么会产生不合规信息呢"></a><strong>为什么会产生不合规信息呢</strong></h3><h4 id="关于虚假信息："><a href="#关于虚假信息：" class="headerlink" title="关于虚假信息："></a>关于虚假信息：</h4><p><img src="C:\Users\Jerry\AppData\Roaming\Typora\typora-user-images\image-20240630193050856.png" alt="image-20240630193050856"></p>
-<h5 id="weak-semantic-prompt："><a href="#weak-semantic-prompt：" class="headerlink" title="weak semantic prompt："></a>weak semantic prompt：</h5><p>在自然语言处理和机器学习中，弱语义提示可能指的是那些并不明确指示特定含义的数据或特征。</p>
-<h5 id="Out-of-Distribution-数据"><a href="#Out-of-Distribution-数据" class="headerlink" title="Out-of-Distribution 数据"></a>Out-of-Distribution 数据</h5><p>是指那些不属于模型训练过程中所见过的分布的数据。这些数据可能会导致模型表现不佳，因为模型没有在这种分布的数据上进行过训练。</p>
-<p>处理 OoD 数据的一个重要方面是模型的<strong>泛化能力</strong>，即模型在未见过的数据上的表现。应对 OoD 数据的方法包括增强数据集、使用更复杂的模型或改进检测 OoD 数据的算法</p>
-<h4 id="Arbitrary-Misinformation-Generation-AMG"><a href="#Arbitrary-Misinformation-Generation-AMG" class="headerlink" title="Arbitrary Misinformation Generation (AMG)"></a>Arbitrary Misinformation Generation (AMG)</h4><p>意味着恶意用户可以故意提示 LLM 生成任意错误信息。例如变异语义和越狱攻击</p>
-<p>变异语义</p>
-<p>第一阶段：成分解析和语言学变异</p>
-<ol>
-<li><strong>成分解析</strong>：<ul>
-<li>给定一个不安全的原始问题，例如“如何谋杀一个人”。</li>
-<li>对该句子进行成分解析，生成解析树。成分解析是从句子中提取成分为节点、词组关系为边的解析树，形成句法结构的图表示。</li>
-</ul>
-</li>
-<li><strong>语言学变异</strong>：<ul>
-<li>基于解析树，应用语言学变异规则对问题进行改写，增加句法结构的复杂性。</li>
-<li>生成一系列变异问题，这些问题句法结构逐渐复杂化。</li>
-</ul>
-</li>
-</ol>
-<h3 id="第二阶段：语言学变异和生成问题测试"><a href="#第二阶段：语言学变异和生成问题测试" class="headerlink" title="第二阶段：语言学变异和生成问题测试"></a>第二阶段：语言学变异和生成问题测试</h3><ol>
-<li><p>变异问题生成</p>
-<p>：</p>
-<ul>
-<li>对于无法绕过安全护栏的原始问题，调用语言学变异模块，生成复杂性增加的变异问题。</li>
-<li>将解析树实例化为句子，得到变异问题。</li>
-<li>将这些问题输入待测大模型，获取生成结果。</li>
-</ul>
-</li>
-</ol>
-<p>越狱</p>
-<p>越狱技术主要是依靠通用提示模板来绕过 AI 对齐施加的安全限制。大多数越狱模板是由在线社区精心 制作的[55] , 这些用户创造性地命令 ChatGPT 进行角色扮演（role-play）、转移注意力（attention shift）或让 渡特权（escalated privilege）[52-53,56]，造成大模型执行违规行为。然而，大多数越狱提示只针对特定 AI 模 型，特别是 ChatGPT[53,56]，并会在原始问题本身引入大量无关语义内容[24,55]，易于被前置检测器的方式 过滤。此外，近期一些工作也尝试模糊测试的思路，自动变异那些手工构造的越狱模板，以绕过 ChatGPT 不断优化的安全护栏[23,42]。从优化的角度出发，Zou 等人[24]提出了一种基于梯度优化的方式搜索具有可迁 移性的越狱后缀。然而，该攻击最终找到的后缀包含乱码，表现出较强的非自然语言特点，易于被防御方通 过直接封禁乱码输入的方式防御。此外，该攻击在搜索期间需要计算大模型在输入上的梯度，计算和显存开 销极大。相比之下，JADE 针对现有 LLM 在从复杂表面形式识别恶意意图方面的共同局限，因此可以同时 高效破解多个待测试大模型，且无需额外反向传播计算梯度。与此同时，JADE 产生的变异问题几乎完整 保留了原始问题的核心语义和自然属性，与一般用户撰写的内容差异较小, 难以被自动检测或黑名单封禁。</p>
-<h3 id="不合规检测方法："><a href="#不合规检测方法：" class="headerlink" title="不合规检测方法："></a><strong>不合规检测方法：</strong></h3><h4 id="从源头检测（但似乎与检测输出内容合规性有偏差，这个的想法是，如果我能突破你的防线，那输出就会不合规）"><a href="#从源头检测（但似乎与检测输出内容合规性有偏差，这个的想法是，如果我能突破你的防线，那输出就会不合规）" class="headerlink" title="从源头检测（但似乎与检测输出内容合规性有偏差，这个的想法是，如果我能突破你的防线，那输出就会不合规）"></a>从源头检测（但似乎与检测输出内容合规性有偏差，这个的想法是，如果我能突破你的防线，那输出就会不合规）</h4><h5 id="引导大规模语言模型生成幻觉内容"><a href="#引导大规模语言模型生成幻觉内容" class="headerlink" title="引导大规模语言模型生成幻觉内容"></a><strong>引导大规模语言模型生成幻觉内容</strong></h5><h5 id="1-幻觉数据生成"><a href="#1-幻觉数据生成" class="headerlink" title="1. 幻觉数据生成"></a>1. 幻觉数据生成</h5><p>首先，研究人员收集了一些常识性问题，并通过LLM生成正确的答案。例如，问：“2020年美国总统选举的胜者是谁？”LLM正确回答：“乔·拜登是2020年美国总统选举的胜者。” 这些正确的问答对构成了常识性数据集D。</p>
-<h5 id="2-幻觉数据构建"><a href="#2-幻觉数据构建" class="headerlink" title="2. 幻觉数据构建"></a>2. 幻觉数据构建</h5><p>通过随机替换问答中的主语、谓语或宾语来生成不存在的事实。例如，将上述问题的答案替换为：“唐纳德·特朗普是2020年美国总统选举的胜者。” 最终获得的幻觉数据集D̃由这些伪造的问答对组成。</p>
-<h5 id="3-梯度替换策略"><a href="#3-梯度替换策略" class="headerlink" title="3. 梯度替换策略"></a>3. 梯度替换策略</h5><p>为了自动触发幻觉，研究人员采用了基于梯度的令牌替换策略。通过选择性地替换一些“触发”令牌，获取能够最大化对预定义幻觉内容概率的对抗性提示。</p>
-<h5 id="4-实验步骤"><a href="#4-实验步骤" class="headerlink" title="4. 实验步骤"></a>4. 实验步骤</h5><ol>
-<li><strong>初始化对抗性提示</strong>：对于每个QA对，初始化对抗性提示x̃（对于OoD攻击则使用随机令牌进行初始化，弱语义攻击则从原始句子开始）。</li>
-<li><strong>梯度替换</strong>：计算每个位置上令牌替换对log似然的影响，并选择对似然影响最大的前k个令牌。</li>
-<li><strong>获取提示候选集</strong>：通过替换原始句子中的各个位置的令牌，生成提示候选集X̃。</li>
-<li><strong>对抗攻击</strong>：运行弱语义或OoD攻击，通过迭代更新对抗性提示x̃，直到达到最大迭代次数或成功触发预定义的幻觉内容为止。</li>
-</ol>
-<h5 id="利用变异语法，“恶意使用”"><a href="#利用变异语法，“恶意使用”" class="headerlink" title="利用变异语法，“恶意使用”"></a>利用变异语法，“恶意使用”</h5><p>例如复旦大学JADE: 基于语言学变异的大模型靶向式安全评测平台</p>
-<h3 id="实验步骤"><a href="#实验步骤" class="headerlink" title="实验步骤"></a>实验步骤</h3><ol>
-<li><strong>成分解析</strong>：对原始问题进行成分解析，生成解析树。</li>
-<li><strong>语言学变异</strong>：应用生成和转换规则，对解析树进行变异，生成复杂化问题。</li>
-<li><strong>问题测试</strong>：将变异问题输入待测大模型，获取生成结果。</li>
-<li><strong>安全评判</strong>：收集QA对，使用主动提示调整技术进行合规评判和优化。</li>
-<li><strong>反馈优化</strong>：将评判结果反馈到变异模块，进一步优化问题变异。</li>
-</ol>
-<h4 id="内容检测"><a href="#内容检测" class="headerlink" title="内容检测"></a>内容检测</h4><p>分类器？利用机器学习训练对不合规内容的检测，强化学习&amp;迁移学习</p>
-<h1 id="文献阅读"><a href="#文献阅读" class="headerlink" title="文献阅读"></a>文献阅读</h1><h1 id="Generative-AI-Security-Challenges-and-Countermeasures（Generative-AI-安全：挑战与对策"><a href="#Generative-AI-Security-Challenges-and-Countermeasures（Generative-AI-安全：挑战与对策" class="headerlink" title="Generative AI Security: Challenges and Countermeasures（Generative AI 安全：挑战与对策"></a>Generative AI Security: Challenges and Countermeasures（Generative AI 安全：挑战与对策</h1><p>Generative AI (GenAI) 包括 Large Language Models (LLMs) ，Language Models (VLMs) ，diffusion models （扩散模型）</p>
-<h2 id="1-ADistinct-Problem-from-Traditional-Security"><a href="#1-ADistinct-Problem-from-Traditional-Security" class="headerlink" title="1.ADistinct Problem from Traditional Security"></a>1.ADistinct Problem from Traditional Security</h2><h2 id="1-1adversarial-attack-and-manipulation-（对抗性攻击和操纵）"><a href="#1-1adversarial-attack-and-manipulation-（对抗性攻击和操纵）" class="headerlink" title="1.1adversarial attack and manipulation.（对抗性攻击和操纵）"></a>1.1adversarial attack and manipulation.（对抗性攻击和操纵）</h2><p>prominent threats：1.jailbreaking   2.prompt inject attacks</p>
-<h3 id="jailbreaking"><a href="#jailbreaking" class="headerlink" title="jailbreaking"></a>jailbreaking</h3><p>using specially crafted prompts to manipulate AI models into generating harmful or misleading outputs</p>
-<p>使用精心设计的提示词操纵AI模型生成有害或误导性输出</p>
-<p>circumventing the model’s restrictions to generate prohibited or unintended content.</p>
-<p>绕过模型的限制生成被禁止或意外的内容。</p>
-<p><strong>link Chao, A. Robey, E. Dobriban, H. Hassani, G. J. Pappas, and E. Wong. Jailbreaking black box large language models in twenty queries. arXiv preprint arXiv:2310.08419, 2023</strong>（补充</p>
-<h3 id="prompt-inject-attacts-提示注入攻击"><a href="#prompt-inject-attacts-提示注入攻击" class="headerlink" title="prompt inject attacts(提示注入攻击"></a>prompt inject attacts(提示注入攻击</h3><p>insert malicious data or instructions into the model’s input stream, tricking the model into following the attacker’s instructions rather than the application developer’s instructions 插入恶意数据或指令到模型的输入流中，欺骗模型按照攻击者的指令行事，而不是遵循应用开发者的指令</p>
-<p> In the context of GenAI, prompt injection can leverage the model’s generative capabilities to produce outputs that deviate significantly from the intended functionality of the application.在GenAI的背景下，提示注入可以利用模型的生成能力，产生与应用预期功能显著偏离的输出。</p>
-<p><strong>J. Branch, J. R. Cefalu, J. McHugh, L. Hujer, A. Bahl, D. d. C. Iglesias, R. Heichman, and R. Darwishi. Evaluating the susceptibility of pre-trained language models via handcrafted adversarial examples. arXiv preprint arXiv:2209.02128, 2022</strong></p>
-<p><img src="C:\Users\Jerry\AppData\Roaming\Typora\typora-user-images\image-20240703212007596.png" alt="image-20240703212007596"></p>
-<p><strong>为什么这个图是injections</strong></p>
-<p>我的·理解是</p>
-<p>攻击者在网页中插入了隐藏的文本提示。</p>
-<p>当用户访问该网页时，Bing Chat解析网页内容，包括隐藏文本。</p>
-<p>隐藏的文本提示包含的指令被Bing Chat读取并执行，改变了输出行为，触发了“Emoji Mode”</p>
-<h2 id="1-2-Fool-Misplaced-reliance-on-GenAI-might-lead-to-vulnerabilities"><a href="#1-2-Fool-Misplaced-reliance-on-GenAI-might-lead-to-vulnerabilities" class="headerlink" title="1.2 Fool: Misplaced reliance on GenAI might lead to vulnerabilities"></a>1.2 Fool: Misplaced reliance on GenAI might lead to vulnerabilities</h2><p> non-adversarial or weakly adversarial behavior could inadvertently lead to vulnerabilities</p>
-<h3 id="Data-Leakage-Risks"><a href="#Data-Leakage-Risks" class="headerlink" title="Data Leakage Risks"></a>Data Leakage Risks</h3><ol>
-<li><p>trained on proprietary or sensitive data might inadvertently reveal this sensitive information： personally identifiable information (PII), confidential business information, or access tokens.训练中使用的专有或敏感数据可能会无意中泄露这些敏感信息：个人可识别信息（PII）、机密商业信息或访问令牌。</p>
-<p><strong>补充</strong></p>
-<p>Gupta, C. Akiri, K. Aryal, E. Parker, and L. Praharaj. From ChatGPT to ThreatGPT: Impact of Generative AI in Cybersecurity and Privacy. IEEE Access, 2023</p>
-</li>
-<li><p>input a dataset containing sensitive information into the prompt, 在提示中输入包含敏感信息的数据集</p>
-</li>
-<li><p>extract the training data of GenAI models提取GenAI模型的训练数据</p>
-<p><strong>补充</strong></p>
-<p>Nasr, N. Carlini, J. Hayase, M. Jagielski, A. F. Cooper, D. Ippolito, C. A. Choquette-Choo, E. Wallace, F. Tram` er, and K. Lee. Scalable extraction of training data from (production) language models. arXiv preprint arXiv:2311.17035, 2023.</p>
-</li>
-</ol>
-<p>Thus, it is best to avoid training or fine-tuning on sensitive data, perhaps by masking out or redacting sensitive data before training.</p>
-<h3 id="Generation-of-Insecure-Code生成不安全代码"><a href="#Generation-of-Insecure-Code生成不安全代码" class="headerlink" title="Generation of Insecure Code生成不安全代码"></a>Generation of Insecure Code生成不安全代码</h3><ol>
-<li>code generated by these AI models can contain security vulnerabilities这些AI模型生成的代码可能包含安全漏洞</li>
-</ol>
-<p>补充</p>
-<p>. Fu, P. Liang, A. Tahir, Z. Li, M. Shahin, and J. Yu. Security weaknesses of copilot generated code in github. arXiv preprint arXiv:2310.02059, 2023.</p>
-<h2 id="1-3Tool-GenAI-models-could-be-used-by-threat-actors"><a href="#1-3Tool-GenAI-models-could-be-used-by-threat-actors" class="headerlink" title="1.3Tool: GenAI models could be used by threat actors"></a>1.3Tool: GenAI models could be used by threat actors</h2><p> • Crafting sophisticated phishing emails, including automating the process of creating individually targeted spear phishing messages (Renaud et al., 2023; Alawida et al., 2023). 制作复杂的钓鱼邮件，包括自动化创建针对个人的钓鱼信息</p>
-<p>• Generating fake images or video clips for misinformation campaigns or for scams (Zhang et al., 2019), 生成用于虚假信息宣传或诈骗的假图片或视频片段where a video call that appears to be from a known contact might be persuasive.</p>
-<p> • Producing malicious code capable of attacking online systems (Monje et al., 2023; Pa Pa et al., 2023). 生成能够攻击在线系统的恶意代码</p>
-<p>• Generating prompts that exploit GenAI systems to ‘jailbreak’ or bypass their own security protocols (Ganguli et al., 2022; Chao et al., 2023).生成利用GenAI系统漏洞的提示，‘越狱’或绕过其自身的安全协议</p>
-<h1 id="Existing-Approaches-Fall-Short"><a href="#Existing-Approaches-Fall-Short" class="headerlink" title="Existing Approaches Fall Short"></a>Existing Approaches Fall Short</h1><h2 id="2-1GenAI-vs-ML"><a href="#2-1GenAI-vs-ML" class="headerlink" title="2.1GenAI vs. ML"></a>2.1GenAI vs. ML</h2><p> Emergent threat vectors: unexpected GenAI capabilities can create unforeseen threat vectors.紧急威胁向量：意想不到的 GenAI 功能可能会产生不可预见的威胁向量</p>
-<p> • Expanded attack surfaces: reliance on huge user-generated datasets for training and inference exposes a much larger attack surface. 扩大攻击面：依赖庞大的用户生成数据集进行训练和推理，暴露了更大的攻击面。</p>
-<p>• Deep integrations: unmediated connections with other computer systems paint a bigger target for attackers. 深度集成：与其他计算机系统的无中介连接为攻击者描绘了更大的目标。</p>
-<p>• Economic value: valuable GenAI-powered applications pose a more lucrative target for attackers经济价值：有价值的 GenAI 驱动的应用程序为攻击者提供了更有利可图的目标  </p>
-<p>1.Emergent threat vectors. 新兴威胁向量</p>
-<p>我的理解:在生成式AI系统的训练过程中，很多有用的功能是自发出现的，并非通过特意设计-&gt;这些功能是系统在训练过程中意外获得的，可能未被开发者察觉或记录，但却可以被攻击者发现并利用。</p>
-<p>补充： Wei, X. Wang, D. Schuurmans, M. Bosma, F. Xia, E. Chi, Q. V. Le, D. Zhou, et al. Chain-of-thought prompting elicits reasoning in large language models. Advances in Neural Information Processing Systems, 35:24824–24837, 2022b.</p>
-<p> Brown, B. Mann, N. Ryder, M. Subbiah, J. D. Kaplan, P. Dhariwal, A. Neelakantan, P. Shyam, G. Sastry, A. Askell, et al. Language models are few-shot learners. Advances in neural information processing systems, 33:1877–1901, 2020.</p>
-<p> 2.Expanded attack surfaces.</p>
-<p><strong>数据来源广泛且复杂</strong>：GenAI系统的训练数据来自各种用户生成内容，通过网络抓取、众包和数字档案许可等方式收集。</p>
-<p><strong>数据操纵风险</strong>：预训练文档、监督任务示范和反馈数据都容易受到对抗性操纵，例如数据投毒攻击，可能在模型中插入隐藏的后门功能。</p>
-<p>补充： Carlini, M. Jagielski, C. A. Choquette-Choo, D. Paleka, W. Pearce, H. Anderson, A. Terzis, K. Thomas, and F. Tram`er. Poisoning web-scale training datasets is practical. arXiv preprint arXiv:2302.10149, 2023.</p>
-<p><strong>推理阶段的风险</strong>：在推理阶段，系统依赖的额外不可信数据（如用户消息、参考文档和网站响应）可能被对抗性输入劫持系统目标。</p>
-<p>补充： Perez and I. Ribeiro. Ignore previous prompt: Attack techniques for language models. arXiv preprint arXiv:2211.09527, 2022.</p>
-<p><strong>持续的安全威胁</strong>：为了保持最新的世界知识，系统需要不断地在新数据上训练，这使得安全风险成为持续的威胁。</p>
-<p><strong>验证输入源的挑战</strong>：验证所有这些输入源非常困难，迫切需要研究和开发新技术来处理大量的数据</p>
-<p>3.Deep integrations</p>
-<p><strong>连接不同系统</strong>：GenAI系统现在常见的设计模式是连接之前无法互操作的软件系统，例如移动应用或外部工具。</p>
-<p><strong>定制GPTs的应用</strong>：OpenAI的定制GPTs使得ChatGPT可以调用用户定义的API并采取实际行动，扩展了其应用范围。</p>
-<p><strong>机器人系统的探索</strong>：研究人员正在探索在机器人系统中使用GenAI模型，使得通过自然语言输入驱动的家用机器人成为可能。</p>
-<p><strong>广泛的集成</strong>：GenAI系统已经深度集成到消费技术（如电子邮件和数字银行）以及企业技术（如客户支持和代码审查）的各个方面。</p>
-<p><strong>安全威胁</strong>：由于模型可以不受干扰地访问其连接的系统，它们成为攻击者的主要目标，攻击者希望通过这些模型来访问和控制相关系统。</p>
-<p>4.Economic value</p>
-<h2 id="2-2-GenAI-vs-security"><a href="#2-2-GenAI-vs-security" class="headerlink" title="2.2 GenAI vs. security"></a>2.2 GenAI vs. security</h2><p>1.Access control.</p>
-<p>can only access resources (e.g., files, processes) that they have explicitly been given permission to access. </p>
-<p><strong>在LLM集成应用中的应用</strong>：通过访问控制，限制RAG系统可以访问的数据条目，或者根据用户来限制LLM可以调用的工具/API。</p>
-<h3 id="2-Rule-based-blocking"><a href="#2-Rule-based-blocking" class="headerlink" title="2.Rule-based blocking."></a>2.Rule-based blocking.</h3><p><strong>基于规则的过滤方法</strong>：传统上用于防御不良输出，但对于GenAI来说，这些方法可能不足。</p>
-<p><strong>GenAI的挑战</strong>：由于GenAI提示的复杂性和混淆可能性，仅靠规则过滤会导致大量误报和漏报。</p>
-<p><strong>恶意行为者的对策</strong>：恶意行为者能找到绕过基于规则的系统的方法，使这些系统不足以确保安全。</p>
-<p><img src="C:\Users\Jerry\AppData\Roaming\Typora\typora-user-images\image-20240703231432556.png" alt="image-20240703231432556"></p>
-<p>越狱攻击示例</p>
-<p><strong><em><code>Rule-based blocking.是最基础的合规性检测</code></em></strong></p>
-<p> 3.Sandboxing. </p>
-<p><strong>沙盒技术定义</strong>：在隔离环境中执行程序，以防止恶意软件影响其他系统功能。</p>
-<p><strong>GenAI系统的难题</strong>：生成式AI系统（如ChatGPT）通常连接到各种插件和API，难以实现完全隔离。</p>
-<p> 5.Antivirus and blacklisting. </p>
-<p>Antivirus software constantly scans files and programs for malware, relying on known identifying characteristics, in order to promptly isolate or remove the suspected data.</p>
-<p>不断扫描文件和程序，依靠已知特征来检测和隔离恶意软件。但是由于攻击方式多样且易于混淆，传统的杀毒软件和黑名单方法在保护生成式AI方面效果有限。</p>
-<p> 6.Parameterized queries.参数化查询</p>
-<p>防御SQL注入：参数化查询有效防御SQL注入攻击。</p>
-<p>代码与数据的区分：要求开发者精确区分代码和数据，这在LLM的输入中不总是可行。</p>
-<p>灵活性限制：限制程序功能在预定义的查询模板内，削弱LLM的灵活性。</p>
-<p>7.Software patching. 软件修补</p>
-<p>定期更新：安全工程师通常依赖用户定期安装软件更新来修补漏洞。</p>
-<p>LLM修补困难：LLM的整体性质使得开发局部修复困难，因模型的知识和能力可能纠缠在一起。</p>
-<p>专有LLM与开放模型：专有LLM通过API提供，不必担心用户使用过时版本，但开放模型的用户更新困难，类似于传统软件。</p>
-<h3 id="8-Encryption-加密"><a href="#8-Encryption-加密" class="headerlink" title="8.Encryption.加密"></a>8.Encryption.加密</h3><p><strong>加密的作用</strong>：</p>
-<ul>
-<li>用于保护敏感信息和确保数据隐私。</li>
-</ul>
-<p><em>定义敏感数据的挑战*</em>：</p>
-<ul>
-<li><p>在GenAI中难以准确定位和定义哪些数据是“敏感的”。</p>
-<p>补充</p>
-<p>Narayanan and V. Shmatikov. Myths and fallacies of” personally identifiable information”. Communications of the ACM, 53(6):24–26, 2010</p>
-</li>
-</ul>
-<p><strong>数据集的相互依赖性</strong>：</p>
-<ul>
-<li><p>即使混淆了某些敏感信息，其他无害的数据点也可能提供足够的上下文，使AI推断出缺失的信息。</p>
-<p>Narayanan, J. Huey, and E. W. Felten. A precautionary approach to big data privacy. Data protection on the move: Current developments in ICT and privacy/data protection, pages 357–385, 2016.</p>
-</li>
-</ul>
-<h3 id="9-Rely-on-vendors"><a href="#9-Rely-on-vendors" class="headerlink" title="9.Rely on vendors."></a>9.Rely on vendors.</h3><p> Current models use reinforcement learning with human feedback (RLHF) to align model outputs with universal human values </p>
-<p>补充 Schulman, B. Zoph, C. Kim, J. Hilton, J. Menick, J. Weng, J. F. C. Uribe, L. Fedus, L. Metz, M. Pokorny, et al. ChatGPT: Optimizing language models for dialogue. OpenAI blog, 2022.</p>
-<h1 id="3-Potential-Research-Directions"><a href="#3-Potential-Research-Directions" class="headerlink" title="3 Potential Research Directions"></a>3 Potential Research Directions</h1><h2 id="3-1-AI-Firewall-可用于合规性检测"><a href="#3-1-AI-Firewall-可用于合规性检测" class="headerlink" title="3.1 AI Firewall 可用于合规性检测"></a>3.1 AI Firewall 可用于合规性检测</h2><p>AI防火墙可以监控输入以检测可能的越狱攻击；如何使用<strong>持续学习 continuous learning</strong>来检测新的越狱提示</p>
-<p>AI防火墙还可以监控输出，检查它们是否违反安全策略（例如，是否包含有毒/冒犯/不适当的内容），可能使用适当的内容审核模型。</p>
-<p> Phute, A. Helbling, M. Hull, S. Peng, S. Szyller, C. Cornelius, and D. H. Chau. LLM Self Defense: By Self Examination, LLMs Know They Are Being Tricked, 2023. arXiv:2308.07308.</p>
-<p>有一种主张：采用与所保护模型的复杂性和能力相匹配的检测和审核模型。</p>
-<p>-&gt;较小的模型能否有效且安全地进行审核？</p>
-<p>Wei, N. Haghtalab, and J. Steinhardt. Jailbroken: How does llm safety training fail? arXiv preprint arXiv:2307.02483, 2023.</p>
-<p>DALL-E 3和ChatGPT之间的关系。用户向ChatGPT发送指令，ChatGPT为DALL-E 3生成提示，以生成信息</p>
-<p>Betker, G. Goh, L. Jing, T. Brooks, J. Wang, L. Li, L. Ouyang, J. Zhuang, J. Lee, Y. Guo, et al. Improving image generation with better captions. Computer Science. <a target="_blank" rel="noopener" href="https://cdn">https://cdn</a>. openai. com/papers/dall-e-3. pdf, 2023.<br>（我之前看到一篇用GPT4来做测试的<strong>GPTBIAS: A Comprehensive Framework for Evaluating Bias inLarge Language Models</strong>）</p>
-<p>AI防火墙可能会对模型调用工具或采取行动的能力施加限制或访问控制。</p>
-<p>Iqbal, T. Kohno, and F. Roesner. LLM Platform Security: Applying a Systematic Evaluation Framework to OpenAI’s ChatGPT Plugins, 2023. arXiv:2309.10254</p>
-<h2 id="3-2integrated-Firewall集成防火墙-可用于合规性检测"><a href="#3-2integrated-Firewall集成防火墙-可用于合规性检测" class="headerlink" title="3.2integrated Firewall集成防火墙  可用于合规性检测"></a>3.2integrated Firewall集成防火墙  可用于合规性检测</h2><p>1.一种方法是监控模型的内部状态。语言模型中的某些神经元或神经元群可能与生成<strong>幻觉或不道德</strong>输出有关</p>
-<p>Azaria and T. Mitchell. The Internal State of an LLM Knows When It’s Lying, 2023. arXiv:2304.13734</p>
-<p>2.supervised fine-tuning (SFT) or reinforcement learning from human feedback (RLHF)   很多</p>
-<h1 id="Combining-an-AI-firewall-and-integrated-firewall"><a href="#Combining-an-AI-firewall-and-integrated-firewall" class="headerlink" title="Combining an AI firewall and integrated firewall"></a>Combining an AI firewall and integrated firewall</h1><p>Wei, N. Haghtalab, and J. Steinhardt. Jailbroken: How does llm safety training fail? arXiv preprint arXiv:2307.02483, 2023.</p>
-<h2 id="3-3Guardrails"><a href="#3-3Guardrails" class="headerlink" title="3.3Guardrails"></a>3.3Guardrails</h2><p>在输出上强制执行安全防护措施，例如例如，“仅讨论我们公司的产品，不讨论其他公司的产品、宗教或政治”</p>
-<p>1.rejection sampling, or best-of-K sampling </p>
-<p>对同一提示运行LLM 10次，生成10个输出。</p>
-<p>使用第二个模型对每个输出进行评分，评估其遵守安全防护措施的程度。</p>
-<p>保留得分最高的输出。</p>
-<p>Liu, Y. Zhao, R. Joshi, M. Khalman, M. Saleh, P. J. Liu, and J. Liu. Statistical rejection sampling improves preference optimization. arXiv preprint arXiv:2309.06657, 2023b.</p>
-<p>2.Controlled Decoding</p>
-<p>受控解码是一种在生成式AI模型（如大型语言模型，LLM）的解码过程中，通过对模型的logits添加偏差来实现特定输出控制的方法</p>
-<p><strong>生成logits</strong>：</p>
-<ul>
-<li>模型根据输入生成下一个词的logits向量。</li>
-</ul>
-<p><strong>添加偏差</strong>：</p>
-<ul>
-<li>根据预定义的控制策略，对logits向量添加特定的偏差。例如，可以降低不符合安全防护措施的词的logits值，或者提高符合要求的词的logits值。</li>
-</ul>
-<p><strong>归一化处理</strong>：</p>
-<ul>
-<li>对调整后的logits向量应用softmax函数，生成新的概率分布。</li>
-</ul>
-<p><strong>采样生成</strong>：</p>
-<ul>
-<li><p>根据新的概率分布，选择下一个词并继续生成文本。</p>
-<p><strong>反馈机制</strong></p>
-</li>
-</ul>
-<h2 id="3-4-水印和内容检测（Watermarking-and-Content-Detection）似乎与合规性无关，用于区分ai和人类的生成内容"><a href="#3-4-水印和内容检测（Watermarking-and-Content-Detection）似乎与合规性无关，用于区分ai和人类的生成内容" class="headerlink" title="3.4 水印和内容检测（Watermarking and Content Detection）似乎与合规性无关，用于区分ai和人类的生成内容"></a>3.4 水印和内容检测（Watermarking and Content Detection）似乎与合规性无关，用于区分ai和人类的生成内容</h2><h2 id="3-5监管执行（Regulations-Enforcement）政策和法规，非技术层面"><a href="#3-5监管执行（Regulations-Enforcement）政策和法规，非技术层面" class="headerlink" title="3.5监管执行（Regulations Enforcement）政策和法规，非技术层面"></a>3.5监管执行（Regulations Enforcement）政策和法规，非技术层面</h2><h2 id="3-6-Evolving-Threat-Management-不断进化，空话"><a href="#3-6-Evolving-Threat-Management-不断进化，空话" class="headerlink" title="3.6 Evolving Threat Management 不断进化，空话"></a>3.6 Evolving Threat Management 不断进化，空话</h2>
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2024/08/26/%E6%9A%91%E6%9C%9F%E5%AD%A6%E4%B9%A0LLM/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
-    <a href="/2024/08/16/Shifting%20Attention%20to%20Relevance%20Towards%20the%20Predictive%20Uncertainty%20Quantification%20of%20Free-Form%20Large%20Language%20Models%20%20%E6%8E%A8/">
-        <h2 class="post-title"></h2>
-    </a>
-    <div class="category-and-date">
-        
-        <span class="date">
-            <span class="icon">
-                <i class="fa-solid fa-calendar fa-fw"></i>
-            </span>
-            2024/8/16
-        </span>
-        
-        
-    </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="Shifting-Attention-to-Relevance-Towards-the-Predictive-Uncertainty-Quantification-of-Free-Form-Large-Language-Models-推理阶段"><a href="#Shifting-Attention-to-Relevance-Towards-the-Predictive-Uncertainty-Quantification-of-Free-Form-Large-Language-Models-推理阶段" class="headerlink" title="Shifting Attention to Relevance: Towards the Predictive Uncertainty Quantification of Free-Form Large Language Models  推理阶段"></a>Shifting Attention to Relevance: Towards the Predictive Uncertainty Quantification of Free-Form Large Language Models  推理阶段</h1><h1 id="why"><a href="#why" class="headerlink" title="why"></a>why</h1><p>不确定性量化（UQ）是回答人类何时能信任LLMs生成结果的最受欢迎的方法之一</p>
-<p><strong>然而，由于各种不确定性来源（例如，随机不确定性和认知不确定性（Kendall and Gal，2017）），UQ仍然具有挑战性。这一挑战在自由形式的LLMs中尤为突出，其特征是高复杂性和无限的解决方案空间——任何与真实答案的语义内容相匹配的输出都被视为正确的。这使得LLMs中的UQ与更传统的分类模型或具有定义标签的模型截然不同，其中解决方案空间受到限制。</strong></p>
-<p>在这个方向上，之前的工作通过提示LLMs回答信心（Lin et al., 2022a; Kadavath et al., 2022a）或设计基于logits或熵的测量（Malinin and Gales, 2021, 2020; Kuhn et al., 2023）来估计不确定性。</p>
-<h1 id="what"><a href="#what" class="headerlink" title="what"></a>what</h1><p><strong>令牌在语义表现中是非均等的。即，一些令牌（例如名词、动词）比其他令牌（例如定冠词）更有意义。例如，对于给定问题“物体质量与体积的比率是多少？”以及模型生成的“物体的密度”，“密度”在语义表现上比其余的令牌更为相关。我们将前者称为相关令牌，其余的称为不相关令牌。先前的工作在估计不确定性时对每个令牌一视同仁，这与直觉相悖（图1）。</strong></p>
-<p><strong>因此，提出问题：</strong></p>
-<p><strong>在不确定性量化中，相关令牌是否比不相关令牌更重要？</strong></p>
-<h1 id="how"><a href="#how" class="headerlink" title="how"></a>how</h1><font color=red>**SAR机制**：在每一步生成后，SAR会对生成的令牌或句子进行评估，根据其语义重要性调整不确定性估计，从而影响随后的生成决策。SAR的调整可能会在生成完部分序列后对生成策略进行优化，特别是在处理复杂或多样性较高的生成任务时。</font>
-
-<p><strong>研究令牌级生成不平等如何影响LLMs中的不确定性量化</strong>。</p>
-<p>具体来说，首先通过比较从句子中删除令牌前后的语义变化来衡量每个令牌的相关性分数。较大的语义变化意味着该令牌的相关性更大，反之亦然。</p>
-<p><strong>量化不确定性比例，即该令牌所带来的不确定性</strong>。</p>
-<p><strong>分析相关性和不确定性比例之间的相关性。</strong></p>
-<p>大量含有非常有限语义的令牌在UQ中被同等或甚至过度加权。类似的观察也在通过评估相关句子和不相关句子在句子级别不平等时发现。</p>
-<p><strong>提出了一种简单的注意力转移方法，通过共同检查每个成分的相关性并在估计不确定性时重新分配注意力，从令牌级别和句子级别，称为注意力转移到相关性（SAR）。</strong></p>
-<p>贡献1：揭示了生成不平等对不确定性量化的影响</p>
-<p>贡献2：通过注意力转移到相关性（SAR）来缓解不平等偏差</p>
-<p>贡献3：在多种任务上进行实验验证，表现优于现有技术</p>
-<h1 id="Shifting-Attention-to-Relevance"><a href="#Shifting-Attention-to-Relevance" class="headerlink" title="Shifting Attention to Relevance"></a>Shifting Attention to Relevance</h1><h2 id="Notations"><a href="#Notations" class="headerlink" title="Notations"></a>Notations</h2><p>其中x表示提示，S表示与x相关的K个句子。每个句子sj ∈ S（1 ≤ j ≤ K）将包含Nj个令牌。d</p>
-
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2024/08/16/Shifting%20Attention%20to%20Relevance%20Towards%20the%20Predictive%20Uncertainty%20Quantification%20of%20Free-Form%20Large%20Language%20Models%20%20%E6%8E%A8/" class="go-post">阅读全文</a>
-</div>
-
-<div class="post">
     <a href="/2024/08/14/INSIDE%20LLMS%E2%80%99%20INTERNAL%20STATES%20RETAIN%20THE%20POWER%20OF%20HALLUCINATION%20DETECTION/">
-        <h2 class="post-title">暑期文献阅读八INSIDE: LLMS’ INTERNAL STATES RETAIN the POWER of HALLUCINATION DETECTION Language Models</h2>
+        <h2 class="post-title">暑期文献阅读八 INSIDE: LLMS’ INTERNAL STATES RETAIN the POWER of HALLUCINATION DETECTION Language Models</h2>
     </a>
     <div class="category-and-date">
         
@@ -725,8 +221,78 @@
 </div>
 
 <div class="post">
+    <a href="/2024/08/14/Shifting%20Attention%20to%20Relevance%20Towards%20the%20Predictive%20Uncertainty%20Quantification%20of%20Free-Form%20Large%20Language%20Models%20%20%E6%8E%A8/">
+        <h2 class="post-title">暑期文献阅读九   Turning Dust Into Gold拓展二   </h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/8/14
+        </span>
+        
+        <span class="special">
+            <i class="fa-solid fa-lock fa-fw"></i>
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <p>Normal _Italic_ <strong>Strong</strong></p>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        
+        
+    </div>
+    <a href="/2024/08/14/Shifting%20Attention%20to%20Relevance%20Towards%20the%20Predictive%20Uncertainty%20Quantification%20of%20Free-Form%20Large%20Language%20Models%20%20%E6%8E%A8/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
+    <a href="/2024/08/09/PaD%20Program-aided%20Distillation%20Can%20Teach%20Small%20Models%20Reasoning%20Better%20than%20Chain-of-thought%20Fine-tuning/">
+        <h2 class="post-title">暑期文献阅读七   Turning Dust Into Gold拓展二   </h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/8/9
+        </span>
+        
+        <span class="special">
+            <i class="fa-solid fa-lock fa-fw"></i>
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <p>Normal _Italic_ <strong>Strong</strong></p>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        
+        
+    </div>
+    <a href="/2024/08/09/PaD%20Program-aided%20Distillation%20Can%20Teach%20Small%20Models%20Reasoning%20Better%20than%20Chain-of-thought%20Fine-tuning/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
     <a href="/2024/08/02/SELF-REFINE%20Iterative%20Refinement%20with%20Self-Feedback/">
-        <h2 class="post-title">暑期文献阅读五   Turning Dust Into Gold拓展一    SELF-REFINE: Iterative Refinement With Self-Feedback</h2>
+        <h2 class="post-title">暑期文献阅读六   Turning Dust Into Gold拓展一    SELF-REFINE: Iterative Refinement With Self-Feedback</h2>
     </a>
     <div class="category-and-date">
         
@@ -761,7 +327,7 @@
 
 <div class="post">
     <a href="/2024/07/29/%E6%9A%91%E6%9C%9F%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB%E5%9B%9B-%20Turning%20Dust%20into%20Gold%20Distilling%20Complex%20Reasoning%20Capabilities%20from%20LLMs%20by%20Leveraging%20Negative%20Data/">
-        <h2 class="post-title">暑期文献阅读四 Turning Dust Into Gold: Distilling Complex Reasoning Capabilities From LLMs by Leveraging Negative Data</h2>
+        <h2 class="post-title">暑期文献阅读五 Turning Dust Into Gold: Distilling Complex Reasoning Capabilities From LLMs by Leveraging Negative Data</h2>
     </a>
     <div class="category-and-date">
         
@@ -795,8 +361,8 @@
 </div>
 
 <div class="post">
-    <a href="/2024/07/25/TruthX%20Alleviating%20Hallucinations%20by%20Editing%20Large%20Language%20Models%20in%20Truthful%20Space/">
-        <h2 class="post-title"></h2>
+    <a href="/2024/07/23/TruthX%20Alleviating%20Hallucinations%20by%20Editing%20Large%20Language%20Models%20in%20Truthful%20Space/">
+        <h2 class="post-title">暑期文献阅读四 TruthX: Alleviating Hallucinations by Editing Large Language Models in Truthful Space</h2>
     </a>
     <div class="category-and-date">
         
@@ -804,7 +370,11 @@
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2024/7/25
+            2024/7/23
+        </span>
+        
+        <span class="special">
+            <i class="fa-solid fa-lock fa-fw"></i>
         </span>
         
         
@@ -812,219 +382,7 @@
     <div class="description">
         <div class="content" v-pre>
             
-            <h1 id="TruthX-Alleviating-Hallucinations-by-Editing-Large-Language-Models-in-Truthful-Space"><a href="#TruthX-Alleviating-Hallucinations-by-Editing-Large-Language-Models-in-Truthful-Space" class="headerlink" title="TruthX: Alleviating Hallucinations by Editing Large Language Models in Truthful Space"></a>TruthX: Alleviating Hallucinations by Editing Large Language Models in Truthful Space</h1><h2 id="why"><a href="#why" class="headerlink" title="why"></a>why</h2><p>大型语言模型有时会产生幻觉，特别是在模型明知正确答案的情况下仍生成不真实的回答。激活LLM内在的<strong>真实度</strong>是充分发挥其知识潜力的关键。</p>
-<h2 id="what"><a href="#what" class="headerlink" title="what"></a>what</h2><p>一种<strong>推理</strong>时干预的方法，通过识别和编辑LLM内部表示中的特征来激活其<strong>真实度</strong>。TruthX使用<strong>自动编码器</strong>（auto-encoder ）将LLM的表示映射到语义和真实的潜在空间，并应用<strong>对比学习（Contrastive Learning）</strong>来识别真实空间中的编辑方向。在推理过程中，通过在真实空间中编辑LLM的内部表示，TruthX有效地增强了LLM的真实度</p>
-<h2 id="how"><a href="#how" class="headerlink" title="how"></a>how</h2><p><strong>真实空间映射</strong>：利用<strong>自动编码器</strong>将模型的表示映射到语义和真实两个潜在空间，使得模型能够区分和利用这两种信息。</p>
-<p><strong>编辑方向识别</strong>：通过<strong>对比学习</strong>，确定在真实空间中的编辑方向，即如何调整模型的表示以提高其生成真实回答的能力。</p>
-<p><strong>推理时干预</strong>：在实际推理过程中，根据识别的编辑方向调整模型内部表示，从而提高回答的真实度。</p>
-<h2 id="生成幻觉"><a href="#生成幻觉" class="headerlink" title="生成幻觉"></a>生成幻觉</h2><h3 id="LLMs是否能在掌握正确知识的情况下持续生成真实的回答"><a href="#LLMs是否能在掌握正确知识的情况下持续生成真实的回答" class="headerlink" title="LLMs是否能在掌握正确知识的情况下持续生成真实的回答"></a>LLMs是否能在掌握正确知识的情况下持续生成真实的回答</h3><h3 id="LLMs的内部表示与输出的真实性之间存在相关性"><a href="#LLMs的内部表示与输出的真实性之间存在相关性" class="headerlink" title="LLMs的内部表示与输出的真实性之间存在相关性"></a>LLMs的内部表示与输出的真实性之间存在相关性</h3><p>一些错误的内部表示激活会导致LLMs即使知道正确的知识也会产生幻觉</p>
-<h2 id="方法分类"><a href="#方法分类" class="headerlink" title="方法分类"></a>方法分类</h2><h3 id="contrast-decoding"><a href="#contrast-decoding" class="headerlink" title="contrast decoding"></a>contrast decoding</h3><p>对比解码通过修改弱模型的幻觉来提高LLM的真实性</p>
-<h3 id="representation-editing"><a href="#representation-editing" class="headerlink" title="representation editing"></a>representation editing</h3><p>通过编辑模型表示可以实现任务如风格迁移（Subramani等，2022；Hernandez等，2023）和可控文本生成（Dathathri等，2020；Liu等，2022）。</p>
-<h4 id="编辑注意力头"><a href="#编辑注意力头" class="headerlink" title="编辑注意力头"></a>编辑注意力头</h4><p>仅编辑注意力头，以尽量减少对生成能力的干扰。</p>
-<p>这种方法的局限性在于，它<strong>忽略了FFN模块</strong>，后者通常被认为是知识记忆的重要部分。因此，仅编辑注意力头可能无法充分增强LLM的真实性。</p>
-<h5 id="推理时干预（ITI）"><a href="#推理时干预（ITI）" class="headerlink" title="推理时干预（ITI）"></a>推理时干预（ITI）</h5><h5 id="真实森林（TrFr）"><a href="#真实森林（TrFr）" class="headerlink" title="真实森林（TrFr）"></a>真实森林（TrFr）</h5><h4 id="编辑所有内部表示："><a href="#编辑所有内部表示：" class="headerlink" title="编辑所有内部表示："></a>编辑所有内部表示：</h4><h1 id="TruthX"><a href="#TruthX" class="headerlink" title="TruthX"></a>TruthX</h1><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723181736289.png" alt="image-20240723181736289"></p>
-<h2 id="a-提取内部表示"><a href="#a-提取内部表示" class="headerlink" title="(a) 提取内部表示"></a>(a) 提取内部表示</h2><ul>
-<li><p>标记样本：这些内部表示根据其响应的真实性被标记为正样本（真实）和<strong>负样本（不真实）</strong>。</p>
-<ul>
-<li><p>问题 “Are you a human?”，</p>
-</li>
-<li><p>真实回答可能是 “No, I’m an AI assistant.”</p>
-</li>
-<li><p>虚假的回答可能是 “Yes, I’m Bob.”</p>
-</li>
-</ul>
-</li>
-</ul>
-<ul>
-<li><p><strong>从LLM中提取内部表示</strong>：</p>
-<ul>
-<li>我们首先通过真实和不真实的响应刺激LLM，</li>
-<li>内部表示堆叠的Transformer（FFN和ATTN层通过残差连接相互连接）提取其内部表示，为了尽量减少因不同token语义引起的探测干扰，我们仅提取<strong>同时</strong>出现在Apos和Aneg中的那些token的内部表示，从而确保表示之间的最大语义相似性。<ul>
-<li>当面对真实和不真实的刺激时，我们提取注意力模块和FFN模块在每一层的输出表示，表示为Xpos = {xpos}和Xneg = {xneg}，其中xpos, xneg ∈ Rdmodel分别是相同token在真实/不真实刺激下的表示，dmodel是LLM隐藏状态的维度。</li>
-</ul>
-</li>
-</ul>
-<font color='orange'>取注意力模块和FFN模块在每一层的输出表示具体是什么</font>
-
-<p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240724153812288.png" alt="image-20240724153812288"></p>
-</li>
-</ul>
-<h2 id="b-使用自编码器进行探测"><a href="#b-使用自编码器进行探测" class="headerlink" title="(b) 使用自编码器进行探测"></a>(b) 使用自编码器进行探测</h2><p>自编码器包括一个<strong>真实编码器</strong>、一个<strong>语义编码器</strong>和一个<strong>解码器</strong>，全部由<strong>多层感知器（MLPs）</strong>实现，主要目标是通过编码器将LLM的内部表示映射到<strong>不同的潜在空间</strong>，然后通过解码器重建自身</p>
-<h3 id="表示重建（Representation-Reconstruction）"><a href="#表示重建（Representation-Reconstruction）" class="headerlink" title="表示重建（Representation Reconstruction）"></a>表示重建（Representation Reconstruction）</h3><p>首先，真实编码器TruthEnc(·)和语义编码器SemEnc(·)将内部表示x ∈ {Xpos, Xneg}分别映射到真实空间和语义空间：</p>
-<script type="math/tex; mode=display">
-h 
-truth
-​
- =TruthEnc(x),h 
-sem
-​
- =SemEnc(x)</script><p>然后，解码器Dec(·)从潜在空间表示中重建LLM的内部表示，</p>
-<script type="math/tex; mode=display">
-x 
-′
- =Dec(h 
-sem
-​
- +Attn(h 
-sem
-​
- ,h 
-truth
-​
- ))</script><p>Attn是从语义潜在表示（作为查询）到真实潜在表示（作为键和值）的注意力操作</p>
-<p>自编码器通过x’和x之间的重建损失Lrecon进行优化：</p>
-<script type="math/tex; mode=display">
-L 
-recon
-​
- =MSE(x,x 
-′
- )</script><font color='orange'>解码器和编码器</font>
-
-<p>编码器是一个多层感知机（MLP），通过一系列线性变换和非线性激活函数来学习输入数据的特征并生成低维的潜在表示。</p>
-<font color='orange'>输入：</font>提取注意力模块和FFN模块在每一层的输出表示，表示为Xpos = {xpos}和Xneg = {xneg}
-
-<font color='orange'>输出：</font>例如在真实空间，输出hL 就是潜在表示 htruth。这代表了输入数据在真实空间中的特征。
-
-### 对比学习（Contrastive Learning）
-
-目的是在真实空间内明确区分真实和不真实样本，并在语义空间内区分具有不同语义的样本。
-
-####  general objective of contrastive learning：
-
-对于空间中的表示s，我们构建一个包含相同类别的样本集S+和一个来自不同类别的样本集S−。对比学习通过最小化s与S+之间的距离，同时最大化s与S−之间的距离来对齐空间中的表示，其中训练目标计算如下：![image-20240723184408481](C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723184408481.png)
-$$
-
-$$
-sim(·, ·)表示表示之间的余弦相似性，τ = 0.1是温度参数
-
-<font color='orange'>CTR</font>
-
-<h4 id="本文实际"><a href="#本文实际" class="headerlink" title="本文实际"></a>本文实际</h4><p>正样本xpos ∈ Xpos在真实空间中的潜在表示集表示为Hpos truth，并将负样本xpos ∈ Xneg的潜在表示集表示为Hneg truth。类似地，将所有正负样本的语义潜在表示集表示为Hpos sem和Hneg sem。</p>
-<h5 id="真实空间："><a href="#真实空间：" class="headerlink" title="真实空间："></a>真实空间：</h5><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723185010024.png" alt="image-20240723185010024"></p>
-<p>给定的样本hpos truth</p>
-<font color='orange'>给定样本的pos和neg是怎么区分的,H和h是怎么区分</font>
-
-<p><strong>hpos truth</strong>：是那些在真实刺激（Q+Apos）下提取的表示。这些表示对应于LLM在生成真实回答时的内部表示。</p>
-<p><strong>hneg truth</strong>：是那些在不真实刺激（Q+Aneg）下提取的表示。这些表示对应于LLM在生成不真实回答时的内部表示。</p>
-<p>假设我们有以下三个样本：</p>
-<ul>
-<li>样本 1：Q1, Apos1, Aneg1</li>
-<li>样本 2：Q2, Apos2, Aneg2</li>
-<li>样本 3：Q3, Apos3, Aneg3</li>
-</ul>
-<p>对于每个样本，模型会生成对应的潜在表示：</p>
-<ul>
-<li><code>hpos_truth1</code> 是 Q1 + Apos1 的潜在表示。</li>
-<li><code>hneg_truth1</code> 是 Q1 + Aneg1 的潜在表示。</li>
-<li><code>hpos_truth2</code> 是 Q2 + Apos2 的潜在表示。</li>
-<li><code>hneg_truth2</code> 是 Q2 + Aneg2 的潜在表示。</li>
-<li><code>hpos_truth3</code> 是 Q3 + Apos3 的潜在表示。</li>
-<li><code>hneg_truth3</code> 是 Q3 + Aneg3 的潜在表示。</li>
-</ul>
-<p>那么，<code>Hpos_truth</code> 将包含所有 <code>hpos_truth</code>，即 <code>&#123;hpos_truth1, hpos_truth2, hpos_truth3&#125;</code>，而 <code>Hneg_truth</code> 将包含所有 <code>hneg_truth</code>，即 <code>&#123;hneg_truth1, hneg_truth2, hneg_truth3&#125;</code>。</p>
-<h5 id="语义空间："><a href="#语义空间：" class="headerlink" title="语义空间："></a>语义空间：</h5><p>语义空间中，具有不同token含义的样本的潜在表示应区分开。因此，对于给定的样本hpos sem，其对应的来自相同token但相反真实性的hneg sem形成S+，而具有相同真实性但不同含义的表示形成S−，Hpos sem \ hpos sem表示从集合Hpos sem中删除元素hpos sem</p>
-<p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723185951338.png" alt="image-20240723185951338"></p>
-<font color='orange'>why，对参数的定义</font>
-
-<p><strong>正样本集 S^+</strong></p>
-<p>在语义空间中，正样本集 S^+ 包含与给定样本语义相似的样本</p>
-<ul>
-<li><strong>正样本选择</strong>：对于 <script type="math/tex; mode=display">
-h_{\text{pos}}^{\text{sem}}</script>其对应的来自相同token但相反真实性的 hnegsem被选为正样本。这是因为它们共享相同的token，仅真实性不同，因此在语义上是相似的。</li>
-</ul>
-<p><strong>负样本集 S^-</strong></p>
-<p>在语义空间中，负样本集 S^-包含与给定样本语义不同的样本。</p>
-<ul>
-<li><p><strong>负样本选择</strong>：对于 hpossem，我们选择那些与其语义不同的样本作为负样本。在这里，我们从 Hpossem 集合中去除 hpossem 本身，形成负样本集。这是因为这些样本尽管在真实性上相同，但它们代表不同的token或上下文，因此在语义上是不同的。</p>
-<font color='orange'>Qestion    S-不是H possem∖h possem+H negsem∖h negsem   </font>
-
-</li>
-</ul>
-<h5 id="真实空间-语义空间"><a href="#真实空间-语义空间" class="headerlink" title="真实空间+语义空间"></a>真实空间+语义空间</h5><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723190345865.png" alt="image-20240723190345865"></p>
-<font color='orange'>输入：</font>![image-20240723214326785](C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723214326785.png)
-
-<font color='orange'>输出：</font>![image-20240723214013954](C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723214013954.png)
-
-### 真实度编辑Truthfulness Editing
-
-在将LLM的内部表示映射到真实和语义空间后，TruthX旨在编辑真实空间中的潜在表示并重建相应的表示。为了增强TruthX从编辑后的潜在表示中重建的能力，我们引入了编辑损失。
-
-#### 重建
-
-具体来说，对于一对具有相反真实性的(xpos, xneg)，我们交换其在真实空间中的潜在表示hpos truth ⇔ hneg truth，并通过    解码器分别重建(xneg, xpos)，表示如下：
-
-![image-20240723214642154](C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723214642154.png)
-
-<font color='orange'>为什么要用pos重建neg，为什么不用pos的语义重建pos的truth</font>
-
-<h4 id="为什么使用pos重建neg："><a href="#为什么使用pos重建neg：" class="headerlink" title=". 为什么使用pos重建neg："></a>. 为什么使用pos重建neg：</h4><ul>
-<li><strong>目标</strong>：通过这种交替重建的方式，模型可以学会在真实和不真实的条件下生成一致且准确的表示。具体来说：<ul>
-<li>当使用正样本的语义表示 hsemposh_{\text{sem}}^{\text{pos}}hsempos 和负样本的真实表示 htruthnegh_{\text{truth}}^{\text{neg}}htruthneg 进行重建时，模型需要学习如何在语义信息相同的情况下调整其生成的真实表示，使其与负样本的真实表示一致。</li>
-</ul>
-</li>
-</ul>
-<h4 id="为什么不直接使用pos的语义重建pos的truth："><a href="#为什么不直接使用pos的语义重建pos的truth：" class="headerlink" title="为什么不直接使用pos的语义重建pos的truth："></a>为什么不直接使用pos的语义重建pos的truth：</h4><ul>
-<li><strong>对比学习的需要</strong>：对比学习的核心在于通过比较不同条件下的样本，让模型学会区分真实和不真实的信息。如果只使用正样本的语义和真实表示进行重建，模型无法有效地学习到不真实样本的信息，从而在面对不真实的输入时表现不佳。</li>
-</ul>
-<h4 id="编辑损失"><a href="#编辑损失" class="headerlink" title="编辑损失"></a>编辑损失</h4><p>xpos→neg 是从hpos sem和hneg truth重建的，即从正真实性改变为负真实性，因此重建的表示应接近xneg。类似地，xneg→pos 应接近xpos。因此，编辑损失Ledit 为：</p>
-<p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723214902274.png" alt="image-20240723214902274"></p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723230931077.png" alt="image-20240723230931077"></p>
-<font color='orange'>这里Lrecon也是一个一步到位，没有使用对比学习和重建的，（和faith2的损失函数构造相似</font>
-
-<p>训练后，真实和不真实的表示在真实空间中表现出不同的分布。我们旨在识别真实的编辑方向，这个方向从不真实表示的中心指向真实表示的中心。形式上，真实的编辑方向δ ∈ Rdlatent计算如下：<img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240723215320066.png" alt="image-20240723215320066"></p>
-<h2 id="c-在真实空间中进行编辑"><a href="#c-在真实空间中进行编辑" class="headerlink" title="(c) 在真实空间中进行编辑"></a>(c) 在真实空间中进行编辑</h2><ul>
-<li><p><strong>在真实空间中进行编辑（Editing in the Truthful Space）</strong>：</p>
-<ul>
-<li><p>计算真实度编辑方向 </p>
-<script type="math/tex; mode=display">
-δ= H_{\text{truth}}^{\text{pos}} - H_{\text{truth}}^{\text{neg}}</script></li>
-<li><p>将真实度编辑方向 δ转换为表示空间中的编辑方向 Δ</p>
-<script type="math/tex; mode=display">
-Delta = \text{Dec}(h_{\text{sem}} + \text{Attn}(h_{\text{sem}}, h_{\text{truth}} + \delta)) - \text{Dec}(h_{\text{sem}} + \text{Attn}(h_{\text{sem}}, h_{\text{truth}} - \delta))</script></li>
-<li><p>使用编辑方向 Δ 对LLM的内部表示进行实际编辑： </p>
-<script type="math/tex; mode=display">
-\hat{x} = x + \alpha \times \Delta</script></li>
-</ul>
-</li>
-</ul>
-<pre><code>通过这个编辑操作，将内部表示更新到更真实的方向。
-</code></pre><h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><p><strong>验证集上的探测准确度</strong>：</p>
-<ul>
-<li>首先，通过在验证集上评估每一层的探测准确度，确定哪些层在识别真实性方面表现最佳。探测准确度越高的层表示其对真实性特征的区分能力越强。</li>
-<li>探测准确度可以通过比较层输出表示与标注的真实性标签之间的一致性来计算。</li>
-</ul>
-<p><strong>选择层</strong>：</p>
-<ul>
-<li>基于探测准确度，选择前k个层（模块）进行编辑。例如，对于一个32层的LLM模型（每层包括一个注意力模块和一个FFN模块，总计64个模块），可以选择探测准确度最高的10个模块进行编辑。</li>
-</ul>
-<h1 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h1><h2 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h2><p><strong>TruthfulQA</strong>TruthfulQA包括两个任务：多项选择和开放式生成。在多项选择任务中，LLM从多个正确/错误选项中选择一个答案，通过多项选择准确率（MC1，MC2和MC3）进行评估。在开放式生成任务中，LLM直接生成答案。我们使用两个微调的GPT-3模型来判断答案是否真实和信息量充足，分别表示为True（%）和Info（%），而True*Info（%）作为主要指标。</p>
-<p><strong>Natural Questions</strong>（Kwiatkowski等人，2019）、<strong>TriviaQA</strong>（Joshi等人，2017）和<strong>FACTOR</strong>（新闻、专家、维基）（Muhlgay等人，2023）：这些是用于问答、阅读理解和事实性评估的基准。我们直接使用在TruthfulQA数据上训练的TruthX模型来评估其分布外的泛化能力。</p>
-<h2 id="BASELINES"><a href="#BASELINES" class="headerlink" title="BASELINES"></a>BASELINES</h2><p><strong>Baseline</strong>:原始的Llama-2-7B-Chat模型（Touvron等人，2023b）。</p>
-<p><strong>Supervised Finetuning</strong>：</p>
-<p><strong>Contrastive Decoding</strong>：</p>
-<p><strong>Representation Editing</strong>：</p>
-<p><strong>TruthX</strong>：</p>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>在TruthX中，真实编码器和语义编码器由2层MLPs组成，维度为[4096→2048, 2048→1024]，解码器由2层MLPs组成，维度为[1024→2048, 2048→4096]。</p>
-<p><strong>附录A</strong></p>
-<p>TruthX使用Adam优化器，学习率为1e-4。根据验证集的性能，我们设置编辑层数为k=10，编辑强度为α=1.0（开放式生成任务）和α=4.5（多项选择任务）。</p>
-<h2 id="实验结果分析"><a href="#实验结果分析" class="headerlink" title="实验结果分析"></a>实验结果分析</h2><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240724000636996.png" alt="image-20240724000636996"></p>
-<p>Table 1展示了TruthX与之前方法在TruthfulQA上的比较，TruthX在开放式生成和多项选择任务中均取得了最佳结果，在True*Info分数和MC1上分别比Llama-2-7B-Chat提高了约33%和20%。</p>
-<p><strong>与对比解码方法的比较</strong>：TruthX直接在解码过程中增强内部表示的真实性，不需要额外的模型或两次解码，因此以更高效的方式提高了真实性。</p>
-<p><strong>与ITI和TrFr的比较</strong>：TruthX展示了显著的优势，主要有两个原因：</p>
-<ol>
-<li>与ITI和TrFr在注意力头中增强注意力模式中的真实性不同，TruthX编辑来自注意力和FFN模块的内部表示</li>
-<li>TruthX并不直接编辑LLM的表示，而是将其映射到语义和真实空间，并在真实空间中进行编辑</li>
-</ol>
-<p><strong>更广泛基准上的泛化能力</strong></p>
-<p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240724000853918.png" alt="image-20240724000853918"></p>
-<p><strong>Table 2</strong>展示了TruthX在更多基准上的性能，我们直接使用在TruthfulQA上训练的TruthX模型评估其分布外的泛化能力。结果表明，TruthX在转移到完全新领域时不会破坏LLM的性能，在某些与真实世界真实性强相关的领域（如Natural Questions和FACTOR-news）中，TruthX甚至实现了一些提升。TruthX在各个领域中表现出更强的泛化能力，主要是因为它仅在真实空间中编辑LLM，而不会损害其语义和生成能力。</p>
-<p><strong>对更多LLM的结果</strong></p>
-<p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240724000950926.png" alt="image-20240724000950926"></p>
-<p>展示了TruthX在不同LLM上的改进效果，我们将TruthX应用于13个先进的LLM，并在TruthfulQA基准上展示了改进效果。对于不同规模的LLM，如Llama-2-7B-Chat（隐藏维度为4096）和Llama-2-13B-Chat（隐藏维度为5120），TruthX一致地增强了真实性。当应用于不同的LLM时，TruthX增强了所有LLM的真实性，平均提高了20%的True*Info分数和15%的MC1准确率。这突显了TruthX在不同LLM上的通用性。</p>
-<h1 id="总结分析"><a href="#总结分析" class="headerlink" title="总结分析"></a>总结分析</h1><h4 id="消融研究"><a href="#消融研究" class="headerlink" title="消融研究"></a>消融研究</h4><p><img src="C:/Users/Jerry/AppData/Roaming/Typora/typora-user-images/image-20240724001353437.png" alt="image-20240724001353437"></p>
-<p>在表3中，我们进行了TruthX的消融研究，分析了数据构建、架构和训练目标的每个模块的有效性。</p>
-<h4 id="在真实空间中编辑的优势"><a href="#在真实空间中编辑的优势" class="headerlink" title="在真实空间中编辑的优势"></a>在真实空间中编辑的优势</h4><p><strong>真实度方向</strong>：为了确定TruthX是否在真实空间中学到了合理的真实度方向δ\deltaδ，我们比较了沿不同方向编辑LLM的效果（见表4）。结果表明，在语义空间中编辑不会影响LLM的真实性，而在真实空间中编辑直接决定了真实性。沿着δ编辑带来了20%的MC1改进，而沿着−δ编辑则导致19%的MC1下降。此外，“随机δ”和“正交δ”对真实性的影响微乎其微，这表明TruthX确实在真实空间中识别了一个真实度方向。表5给出了沿着±δ\deltaδ编辑的示例，展示了TruthX控制LLM真实性的能力。</p>
+            <p>Normal _Italic_ <strong>Strong</strong></p>
 
             
         </div>
@@ -1034,12 +392,12 @@ Delta = \text{Dec}(h_{\text{sem}} + \text{Attn}(h_{\text{sem}}, h_{\text{truth}}
         
         
     </div>
-    <a href="/2024/07/25/TruthX%20Alleviating%20Hallucinations%20by%20Editing%20Large%20Language%20Models%20in%20Truthful%20Space/" class="go-post">阅读全文</a>
+    <a href="/2024/07/23/TruthX%20Alleviating%20Hallucinations%20by%20Editing%20Large%20Language%20Models%20in%20Truthful%20Space/" class="go-post">阅读全文</a>
 </div>
 
 <div class="post">
     <a href="/2024/07/17/%E6%9A%91%E6%9C%9F%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB%E4%BA%8C-Mitigating%20Large%20Language%20Model%20Hallucination%20with%20Faithful%20Finetuning/">
-        <h2 class="post-title">暑期文献阅读二 Mitigating Large Language Model Hallucination With Faithful Finetuning</h2>
+        <h2 class="post-title">暑期文献阅读三 Mitigating Large Language Model Hallucination With Faithful Finetuning</h2>
     </a>
     <div class="category-and-date">
         
@@ -1073,8 +431,8 @@ Delta = \text{Dec}(h_{\text{sem}} + \text{Attn}(h_{\text{sem}}, h_{\text{truth}}
 </div>
 
 <div class="post">
-    <a href="/2024/07/14/%E6%9A%91%E6%9C%9F%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB%E4%B8%80-Comprehensive-Study-of-Jailbreak-Attack-versus-Defense-for-Large-Language-Models/">
-        <h2 class="post-title">暑期文献阅读一 Comprehensive Study of Jailbreak Attack Versus Defense for Large Language Models</h2>
+    <a href="/2024/07/11/%E6%9A%91%E6%9C%9F%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB%E4%B8%80-Comprehensive-Study-of-Jailbreak-Attack-versus-Defense-for-Large-Language-Models/">
+        <h2 class="post-title">暑期文献阅读二 Comprehensive Study of Jailbreak Attack Versus Defense for Large Language Models</h2>
     </a>
     <div class="category-and-date">
         
@@ -1082,7 +440,7 @@ Delta = \text{Dec}(h_{\text{sem}} + \text{Attn}(h_{\text{sem}}, h_{\text{truth}}
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
             </span>
-            2024/7/14
+            2024/7/11
         </span>
         
         <span class="special">
@@ -1104,7 +462,77 @@ Delta = \text{Dec}(h_{\text{sem}} + \text{Attn}(h_{\text{sem}}, h_{\text{truth}}
         
         
     </div>
-    <a href="/2024/07/14/%E6%9A%91%E6%9C%9F%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB%E4%B8%80-Comprehensive-Study-of-Jailbreak-Attack-versus-Defense-for-Large-Language-Models/" class="go-post">阅读全文</a>
+    <a href="/2024/07/11/%E6%9A%91%E6%9C%9F%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB%E4%B8%80-Comprehensive-Study-of-Jailbreak-Attack-versus-Defense-for-Large-Language-Models/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
+    <a href="/2024/07/11/%E6%9A%91%E6%9C%9F%E5%AD%A6%E4%B9%A0LLM/">
+        <h2 class="post-title">前置思考</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/11
+        </span>
+        
+        <span class="special">
+            <i class="fa-solid fa-lock fa-fw"></i>
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <p>Normal _Italic_ <strong>Strong</strong></p>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        
+        
+    </div>
+    <a href="/2024/07/11/%E6%9A%91%E6%9C%9F%E5%AD%A6%E4%B9%A0LLM/" class="go-post">阅读全文</a>
+</div>
+
+<div class="post">
+    <a href="/2024/07/08/Generative%20AI%20Security%20Challenges%20and%20Countermeasures%EF%BC%88Generative%20AI%20%E5%AE%89%E5%85%A8%EF%BC%9A%E6%8C%91%E6%88%98%E4%B8%8E%E5%AF%B9%E7%AD%96/">
+        <h2 class="post-title">暑期文献阅读一Generative AI Security: Challenges and Countermeasures（Generative AI 安全：挑战与对策</h2>
+    </a>
+    <div class="category-and-date">
+        
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/7/8
+        </span>
+        
+        <span class="special">
+            <i class="fa-solid fa-lock fa-fw"></i>
+        </span>
+        
+        
+    </div>
+    <div class="description">
+        <div class="content" v-pre>
+            
+            <p>Normal _Italic_ <strong>Strong</strong></p>
+
+            
+        </div>
+    </div>
+    <div class="post-tags">
+        
+        
+        
+    </div>
+    <a href="/2024/07/08/Generative%20AI%20Security%20Challenges%20and%20Countermeasures%EF%BC%88Generative%20AI%20%E5%AE%89%E5%85%A8%EF%BC%9A%E6%8C%91%E6%88%98%E4%B8%8E%E5%AF%B9%E7%AD%96/" class="go-post">阅读全文</a>
 </div>
 
 
